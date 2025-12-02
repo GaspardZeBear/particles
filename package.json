@@ -1,0 +1,30 @@
+{
+  "name": "particles",
+  "version": "1.0.0",
+  "description": "particles",
+  "main": "index.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GaspardZeBear/particles.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GaspardZeBear/particles/issues"
+  },
+  "homepage": "https://github.com/GaspardZeBear/particles#readme",
+ "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.132.2"
+  },
+  "devDependencies": {
+    "@types/three": "^0.181.0",
+    "vite": "^7.2.6"
+  }
+}

@@ -1,4 +1,6 @@
-# getting-started-with-threejs
+# particles
+
+Display particles flow
 
 ## Files 
 

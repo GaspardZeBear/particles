@@ -1,197 +1,240 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Boule à Neige</title>
-  <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boule à Neige</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
 </head>
+
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
-  <script>
-    // Initialisation de la scène
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
+    <script>
+        // Initialisation de la scène
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
 
-    // Initialisation de la caméra
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 10;
+        // Initialisation de la caméra
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        camera.position.z = 10;
 
-    // Initialisation du rendu
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+        // Initialisation du rendu
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-    // Ajout des contrôles OrbitControls
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+        // Ajout des contrôles OrbitControls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
 
-    // Rayon de la boule à neige
-    const snowGlobeRadius = 5;
+        // Rayon de la boule à neige
+        const snowGlobeRadius = 5;
 
-    const textureLoader=new THREE.TextureLoader()
-    const texture=textureLoader.load('textures/maison.jpg')
-    //const sphereMaterial = new THREE.MeshStandardMaterial({
-    //  map: texture,
-    //  metalness: 0.1,
-    //  roughness: 0.7,
-    //});
+        // Point zero
+        const zeroGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+        const zeroMaterial = new THREE.MeshPhongMaterial({
+            color: 0xffff00,
+            size: 0.1,
+            transparent: false,
+            opacity: 0.8,
+            depthTest: false,
+            depthWrite: true,
+        });
+        const zeroMesh = new THREE.Mesh(zeroGeometry, zeroMaterial);
 
-    // Création de la boule à neige (sphère transparente)
-    const snowGlobeGeometry = new THREE.SphereGeometry(snowGlobeRadius, 32, 32);
-    const snowGlobeMaterial = new THREE.MeshPhongMaterial({
-      //map : texture,
-      //color: 0xaaeeff,
-      transparent: false,
-      opacity: 0.9,
-      //side: THREE.DoubleSide,
-    });
-    const snowGlobe = new THREE.Mesh(snowGlobeGeometry, snowGlobeMaterial);
-    scene.add(snowGlobe);
+        // Création de la boule à neige (sphère transparente)
+        const snowGlobeGeometry = new THREE.SphereGeometry(snowGlobeRadius, 32,32);
+        const snowGlobeMaterial = new THREE.MeshPhongMaterial({
+            color: 0x77b5fe,
+            transparent: true,
+            opacity: 0.2,
+            side: THREE.DoubleSide,
+        });
 
-    // Création d'un objet central (par exemple, un arbre de Noël)
-    //const treeGeometry = new THREE.ConeGeometry(1, 3, 8);
-    //const treeMaterial = new THREE.MeshPhongMaterial({ color: 0x006400 });
-    //const tree = new THREE.Mesh(treeGeometry, treeMaterial);
-    //tree.position.y = -1.5;
-    //snowGlobe.add(tree);
-    const wireMat=new THREE.MeshBasicMaterial({
-        color : 0xffffff,
-        wireframe : true
-    })
-    const wireMesh = new THREE.Mesh(snowGlobeGeometry,wireMat)
-    snowGlobe.add(wireMesh)
-    scene.add(wireMesh)
+        // Création sphère intérieure)
+        const textureLoader = new THREE.TextureLoader()
+        const texture = textureLoader.load('textures/maison.jpg')
+        const snowGlobeGeometryIn = new THREE.SphereGeometry(snowGlobeRadius * 0.95, 32, 32);
+        const snowGlobeMaterialIn = new THREE.MeshPhongMaterial({
+            map: texture,
+            transparent: false,
+            opacity : 1,
+            side: THREE.DoubleSide,
+        });
 
-    // Création des flocons de neige
-    const flakeCount = 100;
-    const flakes = new THREE.Group();
-    snowGlobe.add(flakes);
+        const snowGlobe = new THREE.Mesh(snowGlobeGeometry, snowGlobeMaterial);
+        const snowGlobeIn = new THREE.Mesh(snowGlobeGeometryIn, snowGlobeMaterialIn);
+        scene.add(snowGlobeIn)
 
-    // Géométrie et matériau des flocons
-    const flakeGeometry = new THREE.PlaneGeometry(0.1, 0.1);
-    const flakeMaterial = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.8,
-      side: THREE.DoubleSide,
-    });
+        // Création d'un objet central (par exemple, un arbre de Noël)
+        //const treeGeometry = new THREE.ConeGeometry(1, 3, 8);
+        //const treeMaterial = new THREE.MeshPhongMaterial({ color: 0x006400 });
+        //const tree = new THREE.Mesh(treeGeometry, treeMaterial);
+        //tree.position.y = -1.5;
+        //snowGlobe.add(tree);
 
-    // Fonction pour vérifier si un point est à l'intérieur de la boule
-    function isInsideSphere(x, y, z, radius) {
-      return (x * x + y * y + z * z) <= (radius * radius);
-    }
+        // Ajjout fils de fer
+        const wireMat = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            wireframe: true
+        })
+        const wireMesh = new THREE.Mesh(snowGlobeGeometry, wireMat)
+        //snowGlobe.add(wireMesh)
+        //scene.add(wireMesh)
 
-    // Création des flocons
-    for (let i = 0; i < flakeCount; i++) {
-      const flake = new THREE.Mesh(flakeGeometry, flakeMaterial.clone());
+        // Création des flocons de neige
+        const flakeCount = 500;
+        
+        // Tableaux pour les positions et vitesses des flocons
+        const flakePositions = new Float32Array(flakeCount * 3);
+        const flakeSpeeds = new Float32Array(flakeCount);
+        const flakeSwaySpeedsX = new Float32Array(flakeCount);
+        const flakeSwaySpeedsZ = new Float32Array(flakeCount);
 
-      // Position aléatoire à l'intérieur de la boule
-      const radius = snowGlobeRadius * 1.2; // Rayon légèrement inférieur à celui de la boule
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
+        // Initialisation des flocons
+        for (let i = 0; i < flakeCount; i++) {
+            // Position aléatoire à l'intérieur de la boule
+            const radius = snowGlobeRadius * 0.8;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
 
-      // Position initiale à l'intérieur de la boule
-      flake.position.x = radius * Math.sin(phi) * Math.cos(theta);
-      flake.position.y = radius * Math.sin(phi) * Math.sin(theta);
-      flake.position.z = radius * Math.cos(phi);
+            flakePositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+            flakePositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+            flakePositions[i * 3 + 2] = radius * Math.cos(phi);
 
-      // Taille aléatoire
-      const scale = 0.9 + Math.random() * 0.1;
-      flake.scale.set(scale, scale, scale);
+            // Vitesse de chute aléatoire
+            flakeSpeeds[i] = 0.01 + Math.random() * 0.03;
+            flakeSwaySpeedsX[i] = (Math.random() - 0.5) * 0.01;
+            flakeSwaySpeedsZ[i] = (Math.random() - 0.5) * 0.01;
+        }
+        const flakeGeometry = new THREE.BufferGeometry();
+        flakeGeometry.setAttribute('position', new THREE.BufferAttribute(flakePositions, 3));
 
-      // Vitesse de chute aléatoire
-      flake.userData = {
-        speed: 0.01 + Math.random() * 0.03,
-        rotationSpeed: (Math.random() - 0.5) * 0.02,
-        swaySpeedX: (Math.random() - 0.5) * 0.01,
-        swaySpeedZ: (Math.random() - 0.5) * 0.01,
-      };
+        const flakeMaterial = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 0.1,
+            transparent: false,
+            opacity: 0.8,
+            depthTest: false,
+            depthWrite: true,
+        });
 
-      flakes.add(flake);
-    }
+        const flakes = new THREE.Points(flakeGeometry, flakeMaterial);
+        //flakes.renderOrder = 99; // Les particules seront rendues après les autres objets
+        snowGlobe.add(flakes);
+        //scene.add(flakes)
+        // Fonction pour vérifier si un point est à l'intérieur de la boule
+        function isInsideSphere(x, y, z, radius) {
+            return (x * x + y * y + z * z) <= (radius * radius);
+        }
+        snowGlobeIn.renderOrder = 0; // La photo sera rendue en premier
+        
+        //scene.add(flakes)
+        scene.add(snowGlobe);
+        zeroMesh.renderOrder=100
+        //scene.add(zeroMesh)
 
     // Ajouter une lumière ambiante
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    // Ajouter une lumière directionnelle
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(1, 1, 1);
-    scene.add(directionalLight);
 
-    const gltfLoader = new THREE.GLTFLoader();
+        // Ajouter une lumière ambiante
+        const hemiLight = new THREE.HemisphereLight(0xaa5500,0x0099ff);
+        //scene.add(hemiLight);
 
-// Charger un modèle 3D
-//gltfLoader.load(
-//  'textures/chess.glb',
-//  (gltf) => {
-//    const model = gltf.scene;
-//    model.scale.set(8,8,8);
- //   model.position.y = -2;
-//    snowGlobe.add(model);
-//    console.log("gltf loaded")
-//  }
-//);
+        // Ajouter une lumière directionnelle
+        const directionalLight = new THREE.DirectionalLight(0xaa55ff, 0.8);
+        directionalLight.position.set(10, 10, 1);
+        scene.add(directionalLight);
 
-    // Animation
-    function animate() {
-      requestAnimationFrame(animate);
+        //const gltfLoader = new THREE.GLTFLoader();
+        // Charger un modèle 3D
+        //gltfLoader.load(
+        //  'textures/chess.glb',
+        //  (gltf) => {
+        //    const model = gltf.scene;
+        //    model.scale.set(8,8,8);
+        //   model.position.y = -2;
+        //    snowGlobe.add(model);
+        //    console.log("gltf loaded")
+        //  }
+        //);
 
-      // Faire tourner la boule à neige lentement
-      snowGlobe.rotation.y += 0.002;
-      wireMesh.rotation.y += 0.002;
 
-    
+        function animate() {
+            requestAnimationFrame(animate);
 
-      // Animer les flocons de neige
-      flakes.children.forEach(flake => {
-        // Faire tomber le flocon
-        flake.position.y -= flake.userData.speed;
+            // Faire tourner la boule à neige lentement
+            snowGlobe.rotation.y += 0.002;
 
-        // Faire tourner le flocon
-        flake.rotation.z += flake.userData.rotationSpeed;
+            // Animer les flocons de neige
+            const positions = flakes.geometry.attributes.position.array;
+            for (let i = 0; i < flakeCount; i++) {
+                // Index dans le tableau des positions
+                
+                const index = i * 3;
+                //console.log(i,positions[index + 1])
+                // Faire tomber le flocon
+                positions[index + 1] -= flakeSpeeds[i];
 
-        // Balancement latéral
-        flake.position.x += flake.userData.swaySpeedX;
-        flake.position.z += flake.userData.swaySpeedZ;
+                // Balancement latéral
+                positions[index] += flakeSwaySpeedsX[i];
+                positions[index + 2] += flakeSwaySpeedsZ[i];
 
-        // Vérifier si le flocon est sorti de la boule
-        if (!isInsideSphere(flake.position.x, flake.position.y, flake.position.z, snowGlobeRadius * 0.9)) {
-          // Replacer le flocon à une position aléatoire à l'intérieur de la boule
-          const radius = snowGlobeRadius * 0.8;
-          const theta = Math.random() * Math.PI * 2;
-          const phi = Math.acos(2 * Math.random() - 1);
+                // Vérifier si le flocon est sorti de la boule
+                if (!isInsideSphere(positions[index], positions[index + 1], positions[index + 2], snowGlobeRadius * 1.0)) {
+                    // Replacer le flocon à une position aléatoire à l'intérieur de la boule
+                    const radius = snowGlobeRadius*0.9;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos(2 * Math.random() - 1);
 
-          flake.position.x = radius * Math.sin(phi) * Math.cos(theta);
-          flake.position.y = radius * Math.sin(phi) * Math.sin(theta);
-          flake.position.z = radius * Math.cos(phi);
+                    positions[index] = radius * Math.sin(phi) * Math.cos(theta);
+                    positions[index + 1] = radius * Math.sin(phi) * Math.sin(theta);
+                    positions[index + 2] = radius * Math.cos(phi);
+
+                    
+                    //positions[index] = 0
+                    //positions[index+1] = 0.9*radius
+                    //positions[index+2] = 0
+            
+                }
+            }
+
+            // Indiquer que les positions des flocons ont été mises à jour
+            flakes.geometry.attributes.position.needsUpdate = true;
+
+            controls.update();
+            renderer.render(scene, camera);
         }
-      });
 
-      controls.update();
-      renderer.render(scene, camera);
-    }
+        animate();
 
-    animate();
-
-    // Gestion du redimensionnement de la fenêtre
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  </script>
+        // Gestion du redimensionnement de la fenêtre
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
+
 </html>

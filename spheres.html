@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sphères en Cercle</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script>
+    // Initialisation de la scène
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+
+    // Initialisation de la caméra
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 30;
+
+    // Initialisation du rendu
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Création de la géométrie de la sphère
+    const sphereGeometry = new THREE.SphereGeometry(3, 16, 16);
+
+    const textureLoader=new THREE.TextureLoader()
+    const texture=textureLoader.load('textures/sample.jpg')
+    const sphereMaterial = new THREE.MeshStandardMaterial({
+      map: texture,
+      metalness: 0.1,
+      roughness: 0.7,
+    });
+    const sphereCount = 5;
+
+    // Tableau pour stocker les sphères
+    const spheres = [];
+
+    // Création des sphères
+    for (let i = 0; i < sphereCount; i++) {
+      // Rayon du cercle
+      const radius = (i+1)*6;
+
+      // Angle pour positionner la sphère sur le cercle
+      const angle = (i / sphereCount) * Math.PI * 2;
+
+      // Création de la sphère
+      const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial.clone());
+
+      // Position initiale sur le cercle
+      sphere.position.x = radius * Math.cos(angle);
+      sphere.position.y = radius * Math.sin(angle);
+      sphere.position.z = 0;
+
+      // Couleur aléatoire
+      //sphere.material.color.setRGB(Math.random(), Math.random(), Math.random());
+
+      // Ajouter la sphère à la scène
+      scene.add(sphere);
+
+      // Stocker la sphère et ses propriétés
+      spheres.push({
+        mesh: sphere,
+        angle: angle,
+        speed: 0.01 + Math.random() * 0.2,
+        radius: radius,
+        rotationSpeedX: Math.random() * 0.02, // Vitesse de rotation sur l'axe X
+        rotationSpeedY: Math.random() * 0.02, // Vitesse de rotation sur l'axe Y
+        rotationSpeedZ: Math.random() * 0.02, // Vitesse de rotation sur l'axe Z
+      });
+    }
+
+    // Ajouter une lumière ambiante
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    // Ajouter une lumière directionnelle
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+
+    // Animation
+    function animate() {
+      requestAnimationFrame(animate);
+
+      for (let i = 0; i < sphereCount; i++) {
+        const sphereData = spheres[i];
+        const sphere = sphereData.mesh;
+
+        // Mettre à jour l'angle
+        sphereData.angle += sphereData.speed;
+
+        // Mettre à jour la position de la sphère
+        sphereData.mesh.position.x = sphereData.radius * Math.cos(0.1 * sphereData.angle) ;
+        sphereData.mesh.position.y = sphereData.radius * Math.sin(0.1 * sphereData.angle) ;
+                // Faire tourner la sphère sur elle-même
+        sphere.rotation.x += sphereData.rotationSpeedX;
+        sphere.rotation.y += sphereData.rotationSpeedY;
+        sphere.rotation.z += sphereData.rotationSpeedZ;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Gestion du redimensionnement de la fenêtre
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

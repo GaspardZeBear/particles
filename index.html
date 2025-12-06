@@ -56,6 +56,8 @@
       height: 100%;
     }
   </style>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
   <div id="sidebar">
@@ -71,6 +73,7 @@
   </div>
 
   <script>
+    loadPage('particles.html')
     // Fonction pour charger un script dans la partie principale
     function loadScript(scriptUrl) {
       const container = document.getElementById('script-container');

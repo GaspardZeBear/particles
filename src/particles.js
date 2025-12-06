@@ -130,8 +130,8 @@ controls.dampingFactor = 0.05;
 let loops = 0;
 let currentColor = { r: 1, g: 0, b: 1 }; // Couleur initiale
 
-function zanimate(t) {
-  requestAnimationFrame(zanimate);
+function animate(t) {
+  requestAnimationFrame(animate);
   loops += 1
   controls.update();
   const colors = particleSystem.geometry.attributes.color.array;
@@ -178,7 +178,7 @@ function zanimate(t) {
   renderer.render(scene, camera)
 }
 
-zanimate()
+animate()
 
 // Gestion du redimensionnement de la fenêtre
 window.addEventListener('resize', () => {

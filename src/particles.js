@@ -27,7 +27,7 @@ function hslToRgb(h, s, l) {
   return { r, g, b };
 }
 
-//--------- Générer une couleur aléatoire en HSL et la convertir en RGB
+//--------- 
 function getRandomColor() {
   const h = Math.random(); // Teinte aléatoire entre 0 et 1
   const s = 0.7 + Math.random() * 0.3; // Saturation élevée pour des couleurs vives
@@ -36,7 +36,7 @@ function getRandomColor() {
   return { r, g, b };
 }
 
-//--------- Générer une couleur aléatoire en HSL et la convertir en RGB
+//--------- 
 function initParticleColor(colors,i) {
   const { r, g, b } = getRandomColor();
   colors[i * 3] = r;

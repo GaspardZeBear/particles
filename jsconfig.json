@@ -3,6 +3,7 @@
     "checkJs": true,
     "module": "ESNext",
     "target": "ESNext",
+    "baseUrl" : ".",
     "paths": {
       "three": ["node_modules/three/src/Three"],
       "three/addons/*": ["node_modules/three/examples/jsm/*"]

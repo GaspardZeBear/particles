@@ -62,6 +62,7 @@
 <body>
   <div id="sidebar">
     <h2>Scripts</h2>
+    <button onclick="loadPage('basic.html')">basic</button>
     <button onclick="loadScript('src/particles.js')">particles (js)</button>
     <button onclick="loadPage('particles.html')">particle (html)</button>
     <button onclick="loadPage('spheres.html')">spheres</button>
@@ -73,8 +74,9 @@
   </div>
 
   <script>
-    loadPage('particles.html')
+    loadPage('basic.html')
     // Fonction pour charger un script dans la partie principale
+
     function loadScript(scriptUrl) {
       const container = document.getElementById('script-container');
       container.innerHTML = `<h2>Chargement du script : ${scriptUrl}</h2>`;

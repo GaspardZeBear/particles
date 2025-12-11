@@ -137,7 +137,7 @@
         //scene.add(wireMesh)
 
         // Création des flocons de neige
-        const flakeCount = 5000;
+        const flakeCount = 500;
 
         // Tableaux pour les positions et vitesses des flocons
         const flakePositions = new Float32Array(flakeCount * 3);
@@ -163,7 +163,7 @@
         const flakeGeometry = new THREE.BufferGeometry();
         const flakeMaterial = new THREE.PointsMaterial({
             color: 0xffffff,
-            size: 1,
+            size: 0.2,
             transparent: false,
             opacity: 0.8,
             depthTest: false,

@@ -19,8 +19,6 @@ class SnowBallMesh extends Mesh {
 
   constructor(zTexture,snowGlobeRadius,flakeCount) {
     super()
-    // Rayon de la boule à neige
-    //this.setGeometry()
     this.snowGlobeRadius = snowGlobeRadius;
     this.flakeCount = flakeCount;
     
@@ -33,7 +31,7 @@ class SnowBallMesh extends Mesh {
       side: DoubleSide,
     });
 
-    // Création sphère intérieure)
+    // Création sphère intérieure
     const textureLoader = new TextureLoader()
     const snowGlobeGeometryIn = new SphereGeometry(this.snowGlobeRadius * 0.99, 32, 32);
     const texture = new TextureLoader().load('textures/' + zTexture)
@@ -50,21 +48,13 @@ class SnowBallMesh extends Mesh {
 
     // Création des flocons de neige
     this.initFlakes()
-
-    //flakes.renderOrder = 99; // Les particules seront rendues après les autres objets
     snowGlobe.add(this.flakes);
     snowGlobe.add(this.snowGlobeIn)
     this.add(snowGlobe)
-
-    //scene.add(flakes)
-
-    //this.add(wireMesh)
   }
 
+  //-------------------------------------------------------------------------
   initFlakes() {
-    // Création des flocons de neige
-    //this.flakeCount = 100;
-
     // Tableaux pour les positions et vitesses des flocons
     this.flakePositions = new Float32Array(this.flakeCount * 3);
     this.flakeSpeeds = new Float32Array(this.flakeCount);
@@ -98,25 +88,6 @@ class SnowBallMesh extends Mesh {
 
     flakeGeometry.setAttribute('position', new BufferAttribute(this.flakePositions, 3));
     this.flakes = new Points(flakeGeometry, flakeMaterial);
-    //flakes.renderOrder = 99; // Les particules seront rendues après les autres objets
-
-  }
-
-  //--------------------------------------------------------
-  setGeometry() {
-    this.geometry = new IcosahedronGeometry(8, 10)
-    this.geometry = new SphereGeometry(8, 16, 16);
-    //this.geometry = new BoxGeometry( 5,5, 5 );
-  }
-
-  //-------------------------------------------------------
-  getGeometry() {
-    return (this.geometry)
-  }
-
-  //------------------------------------------------------------
-  getMaterial() {
-    return (this.material)
   }
 
   //----------------------------------------------------------
@@ -131,7 +102,6 @@ class SnowBallMesh extends Mesh {
     });
   }
 
-
   //----------------------------------------------------------------------------------------------
   getFlakeXYZ(radius, theta, phi) {
     let x = radius * Math.sin(theta) * Math.cos(phi);
@@ -140,6 +110,7 @@ class SnowBallMesh extends Mesh {
     //console.log(radius,'theta',theta.toFixed(2),'phi',phi.toFixed(2),'x',x.toFixed(2),'y',y.toFixed(2),'z',z.toFixed(2))
     return ({ 'x': x, 'y': y, 'z': z })
   }
+  //----------------------------------------------------------------------------------------------
   // Fonction pour vérifier si un point est à l'intérieur de la boule
   isInsideSphere(x, y, z, radius) {
     return (x * x + y * y + z * z) <= (radius * radius);
@@ -205,11 +176,8 @@ class SnowBallMesh extends Mesh {
         this.flakePositions[i * 3 + 2] = pos.z
       }
     }
-
     // Indiquer que les positions des flocons ont été mises à jour
     this.flakes.geometry.attributes.position.needsUpdate = true;
-
-    //controls.update();
   }
 }
 export default SnowBallMesh

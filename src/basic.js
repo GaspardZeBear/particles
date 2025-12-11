@@ -10,21 +10,45 @@ import SnowBallMesh from "./classes/SnowBallMesh.js";
 console.log("Entering basic.js")
 const renderer= createRenderer()
 
-const camera = createCamera()
-camera.position.set(0, 0, 75);
+const camera = createCamera({
+  fov:60,
+  ratio:window.innerWidth/window.innerHeight,
+  //near:20,
+  //z:500,
+  y:0,
+  z:100
+})
+ 
 const scene = createScene('black')
 const gridHelper = new THREE.GridHelper(100,100,0xffffff,0xffffff);
 //scene.add(gridHelper);
-const mesh0 = new ThingMesh('alia00.jpg')
-const mesh1 = new ThingMesh('alia01.jpg')
-const mesh2 = new ThingMesh('alia02.jpg')
-const mesh3 = new ThingMesh('alia03.jpg')
-const sMesh0=new SnowBallMesh('alia00.jpg',5,100)
-scene.add(mesh0)
-scene.add(sMesh0)
-scene.add(mesh1)
-//scene.add(mesh2)
-//scene.add(mesh3)
+const imgs=[
+  'alia00.jpg',
+  'alia01.jpg',
+  'alia02.jpg',
+  'alia03.jpg',
+  'maison.jpg'
+]
+
+const meshes= []
+let bowlsCount=1
+let x=Math.random()*200,y=Math.random()*200,z=Math.random()*200,radius=0,angle=0,pos=1
+for (let i=0; i<bowlsCount; i++) {
+  let idx=Math.floor(   Math.random()*imgs.length)
+  let mesh=new ThingMesh(imgs[idx])
+  
+  pos*=-1
+  y = i*20*pos
+  if ( Math.abs(y) > 200 ) y=Math.random()*200
+  if ( Math.abs(radius) > 400 ) radius=Math.random()*200
+  radius +=20
+  angle += Math.PI/10
+  mesh.initPosition(x,y,z,radius,angle,Math.random()*0.005 + 0.001)
+  meshes.push(mesh)
+  scene.add(mesh)
+}
+
+const sMesh0=new SnowBallMesh('maison.jpg',5,100)
 
 // Ajouter une lumière ambiante
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
@@ -32,18 +56,15 @@ scene.add(hemiLight);
 const spotLight = new THREE.SpotLight( 0xffffff, 10.0, 200,Math.PI/3,100,0 );
 scene.add( spotLight );
 
-mesh0.initPosition(0,-5,0,0,0)
-mesh1.initPosition(0,0,0,20,Math.PI)
-mesh2.initPosition(0,10,8,40,Math.PI/2)
-mesh3.initPosition(3,5,0,15,Math.PI/3)
 sMesh0.initPosition(1,1,1,5,3)
+scene.add(sMesh0)
+
 function animate(t) {
   requestAnimationFrame(animate);
-  mesh0.move()
   sMesh0.move()
-  mesh1.move()
-  mesh2.move()
-  mesh3.move()
+  for (let i=0; i<bowlsCount; i++) {
+    meshes[i].move()
+  }
   renderer.render(scene, camera)
 }
 

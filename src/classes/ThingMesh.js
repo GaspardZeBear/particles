@@ -40,7 +40,7 @@ class ThingMesh extends Mesh {
 
   setGeometry() {
     this.geometry = new IcosahedronGeometry(8, 10)
-    this.geometry = new SphereGeometry( 8,16, 16 );
+    this.geometry = new SphereGeometry( 12,16, 16 );
     //this.geometry = new BoxGeometry( 5,5, 5 );
   }
 
@@ -52,10 +52,11 @@ class ThingMesh extends Mesh {
     return (this.material)
   }
 
-  initPosition(x, y, z, orbit, angle) {
+  initPosition(x, y, z, orbit, angle, angularSpeed) {
     this.orbit0 = orbit
     this.orbit=orbit
     this.angle = angle;
+    this.angularSpeed=angularSpeed
     this.x0=x
     this.y0=y
     this.z0=z
@@ -66,9 +67,7 @@ class ThingMesh extends Mesh {
   }
 
   move() {
-    this.angle += 0.01
-    //zeroMesh.position.x += 0.01
-    //this.orbit -= 0.01
+    this.angle += this.angularSpeed
     if (this.orbit > 4 ) {
       this.orbit=this.orbit0
     }

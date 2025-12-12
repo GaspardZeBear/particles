@@ -1,11 +1,13 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+//import { Controls } from "three";
 import { createCamera } from "./components/camera";
 import { createScene } from "./components/scene";
-import { texture } from "three/tsl";
+import { or, texture } from "three/tsl";
 import { createRenderer } from "./components/renderer";
 import ThingMesh from "./classes/ThingMesh.js";
 import SnowBallMesh from "./classes/SnowBallMesh.js";
+
 
 console.log("Entering basic.js")
 const renderer= createRenderer()
@@ -13,12 +15,14 @@ const renderer= createRenderer()
 const camera = createCamera({
   fov:60,
   ratio:window.innerWidth/window.innerHeight,
-  //near:20,
+  near:20,
   //z:500,
+  x:0,
   y:0,
-  z:100
+  z:400
 })
- 
+ const orbitControls = new OrbitControls(camera, renderer.domElement);
+ orbitControls.update()
 const scene = createScene('black')
 const gridHelper = new THREE.GridHelper(100,100,0xffffff,0xffffff);
 //scene.add(gridHelper);
@@ -31,15 +35,21 @@ const imgs=[
 ]
 
 const meshes= []
-let bowlsCount=1
-let x=Math.random()*200,y=Math.random()*200,z=Math.random()*200,radius=0,angle=0,pos=1
+let bowlsCount=50
+let x=Math.random()*200
+let y=Math.random()*200
+let z=Math.random()*200
+let radius=0
+let angle=0
+let sign=1
 for (let i=0; i<bowlsCount; i++) {
   let idx=Math.floor(   Math.random()*imgs.length)
   let mesh=new ThingMesh(imgs[idx])
-  
-  pos*=-1
-  y = i*20*pos
-  if ( Math.abs(y) > 200 ) y=Math.random()*200
+  sign*=-1
+  x = i*20*sign
+  y = i*20*sign
+  if ( Math.abs(x) > 400 ) x=Math.random()*200
+  if ( Math.abs(y) > 300 ) y=Math.random()*200
   if ( Math.abs(radius) > 400 ) radius=Math.random()*200
   radius +=20
   angle += Math.PI/10
@@ -48,7 +58,9 @@ for (let i=0; i<bowlsCount; i++) {
   scene.add(mesh)
 }
 
-const sMesh0=new SnowBallMesh('maison.jpg',5,100)
+const sMesh0=new SnowBallMesh('maison.jpg',50,500)
+sMesh0.initPosition({})
+scene.add(sMesh0)
 
 // Ajouter une lumière ambiante
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
@@ -56,8 +68,14 @@ scene.add(hemiLight);
 const spotLight = new THREE.SpotLight( 0xffffff, 10.0, 200,Math.PI/3,100,0 );
 scene.add( spotLight );
 
-sMesh0.initPosition(1,1,1,5,3)
-scene.add(sMesh0)
+var axisHelper = new THREE.AxesHelper(5);
+scene.add(axisHelper);
+
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//let camControls=new CamControls(camera,renderer)
+//camControls.init()
+//camControls.addMouseHandler(renderer.domElement, drag, zoomIn, zoomOut);
 
 function animate(t) {
   requestAnimationFrame(animate);

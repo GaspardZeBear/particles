@@ -1,4 +1,6 @@
-import { PerspectiveCamera } from 'three';
+import { PerspectiveCamera,
+  Vector3
+ } from 'three';
 
 function createCamera({fov=75,ratio=1.5,near=10,far=1000,x=0,y=0,z=20}) {
 //function createCamera() {
@@ -11,6 +13,8 @@ function createCamera({fov=75,ratio=1.5,near=10,far=1000,x=0,y=0,z=20}) {
 
   // move the camera back so we can view the scene
   camera.position.set(x,y,z);
+  const center = new Vector3();
+  camera.lookAt(center);
 
   return camera;
 }

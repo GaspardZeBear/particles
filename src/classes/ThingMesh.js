@@ -8,14 +8,12 @@ import {
   TextureUtils,
   SphereGeometry,
 } from 'three';
+import MeshMover from "./MeshMover.js";
 
 class ThingMesh extends Mesh {
 
   constructor(zTexture) {
     super()
-    //this.geometry = new IcosahedronGeometry(8, 10)
-    //this.geometry = new SphereGeometry( 8,16, 16 );
-    //this.geometry = new BoxGeometry( 5,5, 5 );
     this.setGeometry()
     const texture = new TextureLoader().load('textures/' + zTexture)
     TextureUtils.contain(texture,1)
@@ -35,6 +33,7 @@ class ThingMesh extends Mesh {
       wireframe: true
     })
     const wireMesh = new Mesh(this.geometry, wireMat)
+    this.meshMover=new MeshMover(this)
     //this.add(wireMesh)
   }
 
@@ -44,41 +43,13 @@ class ThingMesh extends Mesh {
     //this.geometry = new BoxGeometry( 5,5, 5 );
   }
 
-  getGeometry() {
-    return (this.geometry)
-  }
-
-  getMaterial() {
-    return (this.material)
-  }
-
   initPosition(x, y, z, orbit, angle, angularSpeed) {
-    this.orbit0 = orbit
-    this.orbit=orbit
-    this.angle = angle;
-    this.angularSpeed=angularSpeed
-    this.x0=x
-    this.y0=y
-    this.z0=z
-    this.move()
-    //this.mesh.position.x = orbit * Math.cos(angle);
-    //this.mesh.position.y = y
-    //this.mesh.position.z = orbit * Math.sin(angle);
+    this.meshMover.initPosition(x, y, z, orbit, angle, angularSpeed)
   }
 
   move() {
-    this.angle += this.angularSpeed
-    if (this.orbit > 4 ) {
-      this.orbit=this.orbit0
-    }
-    this.position.x = this.orbit * Math.cos(this.angle);
-    this.position.y = this.y0
-    //this.position.y = this.orbit * Math.cos(this.angle) *Math.sin(this.angle);
-    this.position.z = this.orbit * Math.sin(this.angle)
-    //zeroMesh.position.set(x,y,z)
-    //this.mesh.rotateX(Math.PI / 300)
-    this.rotateY(Math.PI / 300)
-    this.rotateZ(Math.PI / 600)
-    }
+    this.meshMover.move()
+  }
+
 }
 export default ThingMesh

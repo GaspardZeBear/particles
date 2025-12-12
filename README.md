@@ -172,3 +172,9 @@ console.log('Fichier HTML autonome créé dans dist/index.html');
 ```
 
 Then run : node build.cjs
+
+
+
+## Camera control 
+
+https://andreasrohner.at/posts/Web%20Development/JavaScript/Simple-orbital-camera-controls-for-THREE-js/

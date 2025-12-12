@@ -17,18 +17,20 @@ import {
 
 class SnowBallMesh extends Mesh {
 
-  constructor(zTexture,snowGlobeRadius,flakeCount) {
+  constructor(zTexture, snowGlobeRadius, flakeCount) {
     super()
     this.snowGlobeRadius = snowGlobeRadius;
     this.flakeCount = flakeCount;
-    
+
     // Création de la boule à neige (sphère transparente)
-    const snowGlobeGeometry = new SphereGeometry(this.snowGlobeRadius, 32, 32);
+    const snowGlobeGeometry = new SphereGeometry(this.snowGlobeRadius, 32, 32)
+    //,0,Math.PI*2,Math.PI*2/4,Math.PI*2/4);
     const snowGlobeMaterial = new MeshPhongMaterial({
       color: 0x77b5fe,
       transparent: true,
       opacity: 0.2,
       side: DoubleSide,
+      wireframe: false
     });
 
     // Création sphère intérieure
@@ -64,22 +66,17 @@ class SnowBallMesh extends Mesh {
     // Initialisation des flocons
     for (let i = 0; i < this.flakeCount; i++) {
       // Position aléatoire à l'intérieur de la boule
-      const radius = this.snowGlobeRadius * 0.97;
-      const angles = this.getInitialFlakeCoordinates()
-      const pos = this.getFlakeXYZ(radius, angles.theta, angles.phi)
-      this.flakePositions[i * 3] = pos.x
-      this.flakePositions[i * 3 + 1] = pos.y
-      this.flakePositions[i * 3 + 2] = pos.z
+      this.initFlakePosition(i)
 
       // Vitesse de chute aléatoire
-      this.flakeSpeeds[i] = 0.01 + Math.random() * 0.03;
-      this.flakeSwaySpeedsX[i] = (Math.random() - 0.5) * 0.01;
-      this.flakeSwaySpeedsZ[i] = (Math.random() - 0.5) * 0.01;
+      this.flakeSpeeds[i] = 0.1 + Math.random() * 0.03;
+      this.flakeSwaySpeedsX[i] = (Math.random() - 0.5) * 0.3;
+      this.flakeSwaySpeedsZ[i] = (Math.random() - 0.5) * 0.1;
     }
     const flakeGeometry = new BufferGeometry();
     const flakeMaterial = new PointsMaterial({
       color: 0xffffff,
-      size: 0.2,
+      size: 1,
       transparent: false,
       opacity: 0.8,
       depthTest: false,
@@ -89,16 +86,24 @@ class SnowBallMesh extends Mesh {
     flakeGeometry.setAttribute('position', new BufferAttribute(this.flakePositions, 3));
     this.flakes = new Points(flakeGeometry, flakeMaterial);
   }
+  //----------------------------------------------------------
+  initFlakePosition(idx) {
+    const radius = this.snowGlobeRadius * 0.97;
+    const angles = this.getInitialFlakeAnglesCoordinates()
+    const pos = this.getFlakeXYZ(radius, angles.theta, angles.phi)
+    this.flakePositions[idx * 3] = pos.x
+    this.flakePositions[idx * 3 + 1] = pos.y
+    this.flakePositions[idx * 3 + 2] = pos.z
+    //console.log('x',pos.x,'y',pos.y,'z',pos.z)
+  }
 
   //----------------------------------------------------------
-  getInitialFlakeCoordinates() {
+  getInitialFlakeAnglesCoordinates() {
     let pi = Math.PI
     return ({
-      'xtheta': Math.random() * Math.PI * 2,
-      'theta': pi / 2,
+      'theta': Math.random() *pi/2,
       'phi': Math.random() * pi * 2,
-      'xxphi': Math.PI / 8,
-      'xphi': Math.acos(2 * Math.random() - 1)
+      'xphi': 0.5* pi,
     });
   }
 
@@ -107,7 +112,7 @@ class SnowBallMesh extends Mesh {
     let x = radius * Math.sin(theta) * Math.cos(phi);
     let y = radius * Math.sin(theta) * Math.sin(phi);
     let z = radius * Math.cos(theta);
-    //console.log(radius,'theta',theta.toFixed(2),'phi',phi.toFixed(2),'x',x.toFixed(2),'y',y.toFixed(2),'z',z.toFixed(2))
+    //console.log('radius',radius,'theta',theta.toFixed(2),'phi',phi.toFixed(2),'x',x.toFixed(2),'y',y.toFixed(2),'z',z.toFixed(2))
     return ({ 'x': x, 'y': y, 'z': z })
   }
   //----------------------------------------------------------------------------------------------
@@ -117,63 +122,53 @@ class SnowBallMesh extends Mesh {
   }
 
   //---------------------------------------------------------------------------------
-  initPosition(x, y, z, orbit, angle) {
+  initPosition({ x = 0, y = 0, z = 0, orbit = 0, angle = 0 }) {
     this.orbit0 = orbit
     this.orbit = orbit
     this.angle = angle;
     this.x0 = x
     this.y0 = y
     this.z0 = z
-    this.move()
-    //this.mesh.position.x = orbit * Math.cos(angle);
-    //this.mesh.position.y = y
-    //this.mesh.position.z = orbit * Math.sin(angle);
+    //this.move()
   }
 
   //--------------------------------------------------------------------------------
   move() {
     this.angle += 0.01
-    //zeroMesh.position.x += 0.01
-    //this.orbit -= 0.01
     if (this.orbit > 4) {
       this.orbit = this.orbit0
     }
     this.position.x = this.orbit * Math.cos(this.angle);
-    this.position.y = this.y0
-    //this.position.y = this.orbit * Math.cos(this.angle) *Math.sin(this.angle);
     this.position.z = this.orbit * Math.sin(this.angle)
-    //zeroMesh.position.set(x,y,z)
-    //this.mesh.rotateX(Math.PI / 300)
-    this.rotateY(Math.PI / 300)
-    this.rotateZ(Math.PI / 600)
+    this.position.x = this.x0
+    this.position.y = this.y0
+    this.position.z = this.z0
+
+    //this.rotateY(Math.PI / 3000)
+    //this.rotateZ(Math.PI / 6000)
 
     // Faire tourner la boule à neige lentement
-    this.snowGlobeIn.rotation.y += 0.002;
+    this.snowGlobeIn.rotation.y += 0.001;
 
     // Animer les flocons de neige
     const positions = this.flakes.geometry.attributes.position.array;
     for (let i = 0; i < this.flakeCount; i++) {
-      // Index dans le tableau des positions
-
       const index = i * 3;
       //console.log(i,positions[index + 1])
-      // Faire tomber le flocon
-      positions[index + 1] -= this.flakeSpeeds[i];
-
       // Balancement latéral
       positions[index] += this.flakeSwaySpeedsX[i];
+      // Faire tomber le flocon
+      positions[index + 1] -= this.flakeSpeeds[i];
       positions[index + 2] += this.flakeSwaySpeedsZ[i];
 
       // Vérifier si le flocon est sorti de la boule
-      if (!this.isInsideSphere(positions[index], positions[index + 1], positions[index + 2], this.snowGlobeRadius * 1)) {
+      if ( !this.isInsideSphere(positions[index], positions[index + 1], positions[index + 2], this.snowGlobeRadius * 0.97)) {
         // Replacer le flocon à une position aléatoire à l'intérieur de la boule
-        console.log("Flake out")
-        const radius = this.snowGlobeRadius * 1;
-        const angles = this.getInitialFlakeCoordinates()
-        const pos = this.getFlakeXYZ(radius, angles.theta, angles.phi)
-        this.flakePositions[i * 3] = pos.x
-        this.flakePositions[i * 3 + 1] = pos.y
-        this.flakePositions[i * 3 + 2] = pos.z
+        //console.log("Flake ",i," out")
+        this.initFlakePosition(i)
+      } else {
+        // Find how to calculate new x for flake. Must follow snowGlobe.x
+        // this.flakePositions[i * 3 + 1] += 0.0002 
       }
     }
     // Indiquer que les positions des flocons ont été mises à jour

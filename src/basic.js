@@ -7,6 +7,8 @@ import { or, texture } from "three/tsl";
 import { createRenderer } from "./components/renderer";
 import ThingMesh from "./classes/ThingMesh.js";
 import SnowBallMesh from "./classes/SnowBallMesh.js";
+import ParticlesMesh from "./classes/ParticlesMesh.js";
+//import { GUI} from 'lil-gui'
 
 
 console.log("Entering basic.js")
@@ -15,15 +17,17 @@ const renderer= createRenderer()
 const camera = createCamera({
   fov:60,
   ratio:window.innerWidth/window.innerHeight,
-  near:20,
+  near:10,
   //z:500,
   x:0,
   y:0,
   z:400
 })
- const orbitControls = new OrbitControls(camera, renderer.domElement);
- orbitControls.update()
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.update()
+
 const scene = createScene('black')
+scene.fog=  new THREE.FogExp2( 0xff00ff, 0.0005 );
 const gridHelper = new THREE.GridHelper(100,100,0xffffff,0xffffff);
 //scene.add(gridHelper);
 const imgs=[
@@ -62,6 +66,8 @@ const sMesh0=new SnowBallMesh('maison.jpg',50,500)
 sMesh0.initPosition({})
 scene.add(sMesh0)
 
+const particles=new ParticlesMesh(2,500)
+scene.add(particles)
 // Ajouter une lumière ambiante
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
@@ -72,14 +78,10 @@ var axisHelper = new THREE.AxesHelper(5);
 scene.add(axisHelper);
 
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//let camControls=new CamControls(camera,renderer)
-//camControls.init()
-//camControls.addMouseHandler(renderer.domElement, drag, zoomIn, zoomOut);
-
 function animate(t) {
   requestAnimationFrame(animate);
   sMesh0.move()
+  //particles.move()
   for (let i=0; i<bowlsCount; i++) {
     meshes[i].move()
   }

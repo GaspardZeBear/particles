@@ -25,7 +25,7 @@ class SnowBallMesh extends Mesh {
     // Création de la boule à neige (sphère transparente)
     const snowGlobeGeometry = new SphereGeometry(this.snowGlobeRadius, 32, 32)
     //,0,Math.PI*2,Math.PI*2/4,Math.PI*2/4);
-    const snowGlobeMaterial = new MeshPhongMaterial({
+    this.snowGlobeMaterial = new MeshPhongMaterial({
       color: 0x77b5fe,
       transparent: true,
       opacity: 0.2,
@@ -45,7 +45,7 @@ class SnowBallMesh extends Mesh {
       side: DoubleSide,
     });
 
-    const snowGlobe = new Mesh(snowGlobeGeometry, snowGlobeMaterial);
+    const snowGlobe = new Mesh(snowGlobeGeometry, this.snowGlobeMaterial);
     this.snowGlobeIn = new Mesh(snowGlobeGeometryIn, snowGlobeMaterialIn);
 
     // Création des flocons de neige
@@ -53,6 +53,11 @@ class SnowBallMesh extends Mesh {
     snowGlobe.add(this.flakes);
     snowGlobe.add(this.snowGlobeIn)
     this.add(snowGlobe)
+  }
+
+  //-------------------------------------------------------------------------
+  setWireframe(bool) {
+    this.snowGlobeMaterial.wireframe=bool
   }
 
   //-------------------------------------------------------------------------

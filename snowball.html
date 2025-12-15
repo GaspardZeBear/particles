@@ -69,7 +69,8 @@
             1,
             10000
         );
-        camera.position.z = 20;
+        camera.position.z = 10;
+        camera.position.y = -20;
 
         // Initialisation du rendu
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -107,7 +108,8 @@
 
         // Création sphère intérieure)
         const textureLoader = new THREE.TextureLoader()
-        const texture = textureLoader.load('textures/maison.jpg')
+        const texture = textureLoader.load('textures/pepette.jpg')
+        //TextureUtils.contain(texture, 1)
         const snowGlobeGeometryIn = new THREE.SphereGeometry(snowGlobeRadius * 0.99, 32, 32);
         const snowGlobeMaterialIn = new THREE.MeshPhongMaterial({
             map: texture,

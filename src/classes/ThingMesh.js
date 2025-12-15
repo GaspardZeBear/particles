@@ -12,8 +12,9 @@ import MeshMover from "./MeshMover.js";
 
 class ThingMesh extends Mesh {
 
-  constructor(zTexture) {
+  constructor(zTexture,radius=12) {
     super()
+    this.radius=radius
     this.setGeometry()
     const texture = new TextureLoader().load('textures/' + zTexture)
     TextureUtils.contain(texture,1)
@@ -39,7 +40,7 @@ class ThingMesh extends Mesh {
 
   setGeometry() {
     this.geometry = new IcosahedronGeometry(8, 10)
-    this.geometry = new SphereGeometry( 12,16, 16 );
+    this.geometry = new SphereGeometry( this.radius,16, 16 );
     //this.geometry = new BoxGeometry( 5,5, 5 );
   }
 

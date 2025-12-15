@@ -11,16 +11,19 @@ import {
     Mesh,
     Points,
     PointsMaterial,
+    Texture,
     TextureLoader,
     TextureUtils,
     SphereGeometry,
+    NormalBlending,
 } from 'three';
 
 class ParticlesMesh extends Mesh {
 
-    constructor(originRadius, particleCount) {
+    constructor(originRadius, size, particleCount) {
         super()
         this.originRadius = originRadius;
+        this.size = size;
         this.particleCount = particleCount;
         this.init()
     }
@@ -105,16 +108,11 @@ class ParticlesMesh extends Mesh {
             this.initParticleDirection(directions, i)
             this.initParticleColor(colors, i)
         }
-
-        particles.setAttribute('position', new BufferAttribute(positions, 3));
-        particles.setAttribute('speed', new BufferAttribute(speeds, 1));
-        particles.setAttribute('direction', new BufferAttribute(directions, 3));
-        particles.setAttribute('color', new BufferAttribute(colors, 3));
-
         // Matériau des particules
         const particleMaterial = new PointsMaterial({
-            //color: 0xff00ff,
-            size: 0.1,
+            fog: false,
+            size: 1,
+            sizeAttenuation: false,
             vertexColors: true, // Active les couleurs par sommet
             transparent: true,
             opacity: 0.8,
@@ -122,29 +120,41 @@ class ParticlesMesh extends Mesh {
         });
 
         // Création du système de particules
+
+        this.geometry.setAttribute('position', new BufferAttribute(positions, 3));
+        this.geometry.setAttribute('speed', new BufferAttribute(speeds, 1));
+        this.geometry.setAttribute('direction', new BufferAttribute(directions, 3));
+        this.geometry.setAttribute('color', new BufferAttribute(colors, 3));
         const particleSystem = new Points(particles, particleMaterial);
-        this.loops = 0
         this.add(particleSystem)
+
+        this.loops = 0
+        this.currentColor = { r: 0, g: 0, b: 0 };
+
     }
 
 
     move() {
-        // Animation loop
-        //console.log("particles.move()")
-        let currentColor = { r: 1, g: 0, b: 1 }; // Couleur initiale
-
         this.loops += 1
 
-        const colors = this.geometry.attributes.color.array;
-        const positions = this.geometry.attributes.position.array;
-        const speeds = this.geometry.attributes.speed.array;
-        const directions = this.geometry.attributes.direction.array;
+        if (this.loops > 100) {
+            // Générer une couleur aléatoire uniforme
+            const { r, g, b } = this.getRandomColor();
+            this.currentColor = { r: r, g: g, b: b };
+            this.loops = 0;
+        }
+
+        const colors = this.geometry.getAttribute('color').array;
+        const positions = this.geometry.getAttribute('position').array;
+        const speeds = this.geometry.getAttribute('speed').array;
+        const directions = this.geometry.getAttribute('direction').array;
 
         for (let i = 0; i < this.particleCount; i++) {
             // Déplacer la particule vers l'extérieur
             positions[i * 3] += directions[i * 3] * speeds[i];
             positions[i * 3 + 1] += directions[i * 3 + 1] * speeds[i];
             positions[i * 3 + 2] += directions[i * 3 + 2] * speeds[i];
+            //positions[i * 3 + 2] =0
 
             // Réinitialiser la particule si elle est trop éloignée
             const distanceToCenter = Math.sqrt(
@@ -152,31 +162,18 @@ class ParticlesMesh extends Mesh {
                 positions[i * 3 + 1] ** 2 +
                 positions[i * 3 + 2] ** 2
             );
-            //console.log("distance  " + i + " " + distanceToCenter)
-
-            if (this.loops > 100) {
-                // Générer une couleur aléatoire uniforme
-                const { r, g, b } = this.getRandomColor();
-                currentColor = {
-                    r: r,
-                    g: g,
-                    b: b
-                };
-                this.loops = 0;
-            }
-            if (distanceToCenter > 20) {  // Seuil de distance pour réinitialiser
-                colors[i * 3] = currentColor.r    // R
-                colors[i * 3 + 1] = currentColor.g; // G
-                colors[i * 3 + 2] = currentColor.b; // B
+            console.log("distance  " + i + " " + distanceToCenter, 'x', positions[i * 3], 'y', positions[i * 3 + 1], 'z', positions[i * 3 + 2])
+            if (distanceToCenter > 200) {  // Seuil de distance pour réinitialiser
+                colors[i * 3] = this.currentColor.r    // R
+                colors[i * 3 + 1] = this.currentColor.g; // G
+                colors[i * 3 + 2] = this.currentColor.b; // B
                 this.initParticlePosition(positions, i)
                 this.initParticleSpeed(speeds, i)
                 this.initParticleDirection(directions, i)
             }
         }
-
-        this.geometry.attributes.position.needsUpdate = true;
-        this.geometry.attributes.color.needsUpdate = true;
-
+        this.geometry.getAttribute('position').needsUpdate = true;
+        this.geometry.getAttribute('color').needsUpdate = true;
     }
 
 }

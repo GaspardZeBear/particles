@@ -40,7 +40,7 @@ class ThingMesh extends Mesh {
 
   setGeometry() {
     this.geometry = new IcosahedronGeometry(8, 10)
-    this.geometry = new SphereGeometry( this.radius,16, 16 );
+    this.geometry = new SphereGeometry( this.radius,32, 16 );
     //this.geometry = new BoxGeometry( 5,5, 5 );
   }
 

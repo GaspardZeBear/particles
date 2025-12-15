@@ -1,31 +1,33 @@
 import ThingMesh from "../classes/ThingMesh.js";
 
-function createBowls({bowlsCount=10,x=0,y=0,z=0,imgs=[],thingMeshRadius=20,bowlsPerOrbit=1,snowGlobeRadius=50}) {
+function createBowls({ bowlsCount = 10, x = 0, y = 0, z = 0, w = 400, h = 400, imgs = [], thingMeshRadius = 20, bowlsPerOrbit = 1, snowGlobeRadius = 50 }) {
 
-let meshes= []
-let radius=snowGlobeRadius
-let angle=0
-let sign=1
-for (let i=0; i<bowlsCount; i++) {
-  sign*=-1
-  x = i*thingMeshRadius*sign
-  y = i*thingMeshRadius*sign
-  z = i*thingMeshRadius*sign
-  if ( Math.abs(x) > 400 ) x=Math.random()*200
-  if ( Math.abs(y) > 300 ) y=Math.random()*200
-  if ( Math.abs(radius) > 400 ) radius=Math.random()*200
-  radius +=thingMeshRadius
-  angle += Math.PI/10
-  let bowlSpeed=Math.random()*0.01 + 0.001
-  for (let b=0;b<bowlsPerOrbit;b++) {
-    let idx=Math.floor(   Math.random()*imgs.length)
-    let mesh=new ThingMesh(imgs[idx],thingMeshRadius)
-    mesh.initPosition(x,y,z,radius,angle+b*2*Math.PI/bowlsPerOrbit,bowlSpeed)
-    meshes.push(mesh)
-    //scene.add(mesh)
+  let meshes = []
+  let radius = snowGlobeRadius
+  let angle = 0
+  let sign = 1
+  let x0 = x
+  let y0 = y
+  for (let i = 0; i < bowlsCount; i++) {
+    sign *= -1
+    x = i * thingMeshRadius * sign
+    y = i * thingMeshRadius * sign/2
+    z = i * thingMeshRadius * sign
+    if (Math.abs(x) > 2 * w) x = x0
+    if (Math.abs(y) > 2 * h) y = y0
+    if (Math.abs(radius) > 400) radius = Math.random() * 200
+    radius += thingMeshRadius
+    angle += Math.PI / 10
+    let bowlSpeed = Math.random() * 0.01 + 0.001
+    for (let b = 0; b < bowlsPerOrbit; b++) {
+      let idx = Math.floor(Math.random() * imgs.length)
+      let mesh = new ThingMesh(imgs[idx], thingMeshRadius)
+      mesh.initPosition(x, y, z, radius, angle + b * 2 * Math.PI / bowlsPerOrbit, bowlSpeed)
+      meshes.push(mesh)
+      //scene.add(mesh)
+    }
   }
-}
-return(meshes)
+  return (meshes)
 }
 
 export { createBowls };

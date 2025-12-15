@@ -1,14 +1,16 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-//import { Controls } from "three";
+//import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+//import { OrbitControls } from "three/addons/controls/OrbitControls";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { createCamera } from "./components/camera";
 import { createScene } from "./components/scene";
-import { or, texture } from "three/tsl";
+//import { or, texture } from "three/tsl";
 import { createRenderer } from "./components/renderer";
 import ThingMesh from "./classes/ThingMesh.js";
 import SnowBallMesh from "./classes/SnowBallMesh.js";
 import ParticlesMesh from "./classes/ParticlesMesh.js";
 import { createBowls } from "./components/bowls";
+import { createPlaneBackground } from "./components/background";
 //import { GUI} from 'lil-gui'
 
 
@@ -36,8 +38,9 @@ const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.update()
 
 const scene = createScene('black')
-scene.fog=  new THREE.FogExp2( 0xff00ff, 0.0005 );
-const gridHelper = new THREE.GridHelper(100,100,0xffffff,0xffffff);
+//scene.add(createPlaneBackground("background.jpg",window.innerWidth,window.innerHeight,-600))
+//scene.fog=  new THREE.FogExp2( 0xff00ff, 0.0005 );
+//const gridHelper = new THREE.GridHelper(100,100,0xffffff,0xffffff);
 //scene.add(gridHelper);
 const imgs=[
   'alia00.jpg',
@@ -51,8 +54,8 @@ const imgs=[
 
 
 let bowlsCount=20
-let x=Math.random()*200
-let y=Math.random()*200
+let x=Math.random()*window.innerWidth/window.innerHeight
+let y=Math.random()*window.innerHeight
 let z=Math.random()*200
 let radius=SNOWGLOBERADIUS
 let angle=0
@@ -64,6 +67,8 @@ const meshes= createBowls({
   x:x,
   y:y,
   z:z,
+  w:window.innerWidth,
+  h:window.innerHeight,
   imgs:imgs,
   thingMeshRadius:20,
   bowlsPerOrbit:4,
@@ -85,10 +90,10 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 const spotLight = new THREE.SpotLight( 0xffffff, 10.0, 200,Math.PI/3,100,0 );
 scene.add( spotLight );
-const spotLight1 = new THREE.SpotLight( 0xff00ff, 20.0, 200,Math.PI,0,0.1 );
+const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 200,Math.PI,0,0.1 );
 spotLight1.position.set(-100,-100,100)
 scene.add( spotLight1 );
-const spotLight2 = new THREE.SpotLight( 0x00ff00, 20.0, 200,Math.PI,0,0.1 );
+const spotLight2 = new THREE.SpotLight( 0x00ff00, 5.0, 200,Math.PI,0,0.1 );
 spotLight2.position.set(100,100,100)
 scene.add( spotLight2 );
 const spotLight3 = new THREE.SpotLight( 0x0000ff, 20.0, 200,Math.PI,0,0.1 );

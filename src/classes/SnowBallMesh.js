@@ -81,7 +81,7 @@ class SnowBallMesh extends Mesh {
     const flakeGeometry = new BufferGeometry();
     const flakeMaterial = new PointsMaterial({
       color: 0xffffff,
-      size: 1,
+      size: 2,
       transparent: false,
       opacity: 0.8,
       depthTest: false,

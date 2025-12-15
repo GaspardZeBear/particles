@@ -20,7 +20,7 @@ class MeshMover {
   }
 
   move() {
-    this.mesh.angle += this.mesh.angularSpeed
+    this.mesh.angle += this.mesh.angularSpeed/4
     if (this.mesh.orbit > 4 ) {
       this.mesh.orbit=this.mesh.orbit0
     }

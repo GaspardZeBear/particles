@@ -13,9 +13,15 @@ import { createBowls } from "./components/bowls";
 
 
 console.log("Entering basic.js")
+const qString = window.location.search;
+const params = new URLSearchParams(qString);
+let snowBallImg="alia00.jpg"
+if ( params.get("snowBallImg") ) {
+  snowBallImg=params.get("snowBallImg")
+}
 const renderer= createRenderer()
 const NEAR=10
-const SNOWGLOBERADIUS=50
+const SNOWGLOBERADIUS=75
 const camera = createCamera({
   fov:60,
   ratio:window.innerWidth/window.innerHeight,
@@ -60,38 +66,15 @@ const meshes= createBowls({
   z:z,
   imgs:imgs,
   thingMeshRadius:20,
-  bowlsPerOrbit:6,
+  bowlsPerOrbit:4,
   snowGlobeRadius:SNOWGLOBERADIUS
 })
 
-//for (let i=0; i<bowlsCount; i++) {
-//  sign*=-1
- // x = i*THINGMESHRADIUS*sign
-//  y = i*THINGMESHRADIUS*sign
-//  z = i*THINGMESHRADIUS*sign
-//  if ( Math.abs(x) > 400 ) x=Math.random()*200
-//  if ( Math.abs(y) > 300 ) y=Math.random()*200
-//  if ( Math.abs(radius) > 400 ) radius=Math.random()*200
-//  radius +=THINGMESHRADIUS
-//  angle += Math.PI/10
-  //let mesh=new ThingMesh(imgs[idx],THINGMESHRADIUS)
-  //mesh.initPosition(x,y,z,radius,angle,Math.random()*0.005 + 0.001)
-  //meshes.push(mesh)
-  //scene.add(mesh)
-  //let bowlSpeed=Math.random()*0.01 + 0.001
-  //for (let b=0;b<BOWLSPERORBIT;b++) {
-  //  let idx=Math.floor(   Math.random()*imgs.length)
-  //  let mesh=new ThingMesh(imgs[idx],THINGMESHRADIUS)
-  //  mesh.initPosition(x,y,z,radius,angle+b*2*Math.PI/BOWLSPERORBIT,bowlSpeed)
-  //  meshes.push(mesh)
-  //  scene.add(mesh)
-  //}
-//}
 for (let i=0; i<meshes.length; i++) {
   scene.add(meshes[i])
 }
 
-const sMesh0=new SnowBallMesh('alia00.jpg',SNOWGLOBERADIUS,500)
+const sMesh0=new SnowBallMesh(snowBallImg,SNOWGLOBERADIUS,500)
 sMesh0.initPosition({})
 scene.add(sMesh0)
 
@@ -102,9 +85,18 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 const spotLight = new THREE.SpotLight( 0xffffff, 10.0, 200,Math.PI/3,100,0 );
 scene.add( spotLight );
+const spotLight1 = new THREE.SpotLight( 0xff00ff, 20.0, 200,Math.PI,0,0.1 );
+spotLight1.position.set(-100,-100,100)
+scene.add( spotLight1 );
+const spotLight2 = new THREE.SpotLight( 0x00ff00, 20.0, 200,Math.PI,0,0.1 );
+spotLight2.position.set(100,100,100)
+scene.add( spotLight2 );
+const spotLight3 = new THREE.SpotLight( 0x0000ff, 20.0, 200,Math.PI,0,0.1 );
+spotLight3.position.set(0,100,100)
+scene.add( spotLight3 );
 
 var axisHelper = new THREE.AxesHelper(5000);
-scene.add(axisHelper);
+//scene.add(axisHelper);
 
 
 function animate(t) {

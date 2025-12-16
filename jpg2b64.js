@@ -4,7 +4,7 @@ const path = require('path');
 // Répertoire contenant les images
 const imagesDir = './textures/'; // Remplacez par le chemin de votre répertoire
 // Fichier de sortie JSON
-const outputFile = './textures/textures_base64.json'; // Fichier JSON où les images en base64 seront enregistrées
+const outputFile = './textures/textures_base64.js'; // Fichier JSON où les images en base64 seront enregistrées
 
 // Fonction pour lire les fichiers .jpg dans un répertoire
 function readJpgFiles(dir) {

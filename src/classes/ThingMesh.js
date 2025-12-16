@@ -9,6 +9,7 @@ import {
   SphereGeometry,
 } from 'three';
 import MeshMover from "./MeshMover.js";
+import { B64Loader } from './B64Loader.js';
 
 class ThingMesh extends Mesh {
 
@@ -16,7 +17,8 @@ class ThingMesh extends Mesh {
     super()
     this.radius=radius
     this.setGeometry()
-    const texture = new TextureLoader().load('textures/' + zTexture)
+    //const texture = new TextureLoader().load('textures/' + zTexture)
+    const texture=new B64Loader().b64load(zTexture)
     TextureUtils.contain(texture,1)
     this.material = new MeshPhongMaterial({
       map: texture,

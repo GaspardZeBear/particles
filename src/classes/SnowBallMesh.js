@@ -15,6 +15,7 @@ import {
   TextureUtils,
   SphereGeometry,
 } from 'three';
+import { B64Loader } from './B64Loader.js';
 
 class SnowBallMesh extends Mesh {
 
@@ -35,10 +36,10 @@ class SnowBallMesh extends Mesh {
     });
 
     // Création sphère intérieure
-    const textureLoader = new TextureLoader()
+    //const textureLoader = new TextureLoader()
     const snowGlobeGeometryIn = new SphereGeometry(this.snowGlobeRadius * 0.99, 32, 32);
-    const texture = new TextureLoader().load('textures/' + zTexture)
-    //const texture=new Texture()
+    //const texture = new TextureLoader().load('textures/' + zTexture)
+    const texture=new B64Loader().b64load(zTexture)
     //texture.image=zTexture
     TextureUtils.contain(texture, 1)
     const snowGlobeMaterialIn = new MeshPhongMaterial({

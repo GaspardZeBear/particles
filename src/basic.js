@@ -1,20 +1,21 @@
-import * as THREE from "three";
+//import * as THREE from "three";
+import * as THREE from '../node_modules/three/build/three.module.js';
 //import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 //import { OrbitControls } from "three/addons/controls/OrbitControls";
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
 import { createCamera } from "./components/camera";
-import { createScene } from "./components/scene";
+import { createScene } from "./components/scene.js";
 //import { or, texture } from "three/tsl";
-import { createRenderer } from "./components/renderer";
+import { createRenderer } from "./components/renderer.js";
 import ThingMesh from "./classes/ThingMesh.js";
 import SnowBallMesh from "./classes/SnowBallMesh.js";
 import ParticlesMesh from "./classes/ParticlesMesh.js";
-import { createBowls } from "./components/bowls";
+import { createBowls } from "./components/bowls.js";
 import { createPlaneBackground } from "./components/background";
 //import { GUI} from 'lil-gui'
 
 
-console.log("Entering basic.js")
+console.log("Entering xxxbasic.js")
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
 let snowBallImg="alia00.jpg"

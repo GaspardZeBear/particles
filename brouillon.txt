@@ -1,0 +1,23 @@
+Structure du projet :
+
+particles/
+|── index.html : main html page, buttons to launch basic.html, snowball.html 
+│── basic.html :  <script type="module" src="src/basic.js">
+│── snowball.html :  <script type="module" src="src/snowball.js">
+├── node_modules/ : includes three.js, OrbitControl etc
+├── src/
+│   ├── basic.js     : js script called from basic.html
+│   ├── snowball.js  : js script called from snowball.html
+│   ├── classes/     : js objects
+│   ├── components/  : js components (function) 
+│   ├── utils/       : util function
+│   └── ...
+├── vite.config.js
+├── package.json
+└── textures/
+│   ├── image1.jpg
+│   ├── image2.jpg
+└── ...
+
+
+J'ai aussi des ressurces (fichiers jpg) dans le répertoire textures). Comment les inclure dans le build ?

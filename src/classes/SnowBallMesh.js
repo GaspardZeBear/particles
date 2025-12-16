@@ -10,6 +10,7 @@ import {
   Mesh,
   Points,
   PointsMaterial,
+  Texture,
   TextureLoader,
   TextureUtils,
   SphereGeometry,
@@ -37,6 +38,8 @@ class SnowBallMesh extends Mesh {
     const textureLoader = new TextureLoader()
     const snowGlobeGeometryIn = new SphereGeometry(this.snowGlobeRadius * 0.99, 32, 32);
     const texture = new TextureLoader().load('textures/' + zTexture)
+    //const texture=new Texture()
+    //texture.image=zTexture
     TextureUtils.contain(texture, 1)
     const snowGlobeMaterialIn = new MeshPhongMaterial({
       map: texture,

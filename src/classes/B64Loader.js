@@ -1,5 +1,5 @@
 // Importer le fichier JSON
-import { textures } from '../../textures/textures_base64.js';
+import { textures } from '../components/textures_base64.js';
 import { TextureLoader } from 'three';
 
 class B64Loader {

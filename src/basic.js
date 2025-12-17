@@ -3,7 +3,7 @@ import * as THREE from '../node_modules/three/build/three.module.js';
 //import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 //import { OrbitControls } from "three/addons/controls/OrbitControls";
 import { OrbitControls } from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
-import { createCamera } from "./components/camera";
+import { createCamera } from "./components/camera.js";
 import { createScene } from "./components/scene.js";
 //import { or, texture } from "three/tsl";
 import { createRenderer } from "./components/renderer.js";
@@ -11,7 +11,7 @@ import ThingMesh from "./classes/ThingMesh.js";
 import SnowBallMesh from "./classes/SnowBallMesh.js";
 import ParticlesMesh from "./classes/ParticlesMesh.js";
 import { createBowls } from "./components/bowls.js";
-import { createPlaneBackground } from "./components/background";
+import { createPlaneBackground } from "./components/background.js";
 //import { GUI} from 'lil-gui'
 
 

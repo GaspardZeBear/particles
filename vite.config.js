@@ -5,6 +5,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 export default defineConfig({
   base: './', // Permet de charger les fichiers localement
 
+  /*-----------------------------
     plugins: [
     viteStaticCopy({
       targets: [
@@ -15,6 +16,7 @@ export default defineConfig({
       ]
     })
   ],
+  ----*/
 
   resolve: {
     alias: {
@@ -46,6 +48,7 @@ export default defineConfig({
         entryFileNames: `assets/js/[name].js`,
         chunkFileNames: `assets/js/[name].js`,
         //assetFileNames: `assets/[ext]/[name].[ext]`,
+        /*--------
         assetFileNames: (assetInfo) => {
           if (assetInfo.name.endsWith('.jpg') || assetInfo.name.endsWith('.png')) {
             //return `assets/textures/[name][extname]`; // Place les images dans assets/textures/
@@ -53,6 +56,7 @@ export default defineConfig({
           }
           return `assets/[ext]/[name][extname]`; // Autres fichiers
         },
+        ----------*/
       },
     },
   },

@@ -136,7 +136,37 @@ rm -rf package-lock.json
 npm install three@latest
 ```
 
-## Deployment
+## Embed images 
+
+Note : images used for textures are data uris in a map called textures. Useful to run from explorer witout server
+
+- drop jpg files in textures
+- from scripts/ run : node jpg2b64.js
+-- this will generate a js module components/textures_b64.js
+- cleanup components/textures_b64.js (remove unwanted images)
+
+## Deployment (new) 
+
+npm run build
+```
+Create dist dir
+- dist
+  index.html
+  basic.html
+  ...
+  - assets
+    basic.js
+```
+
+To run without http server and avoid CORS problem, embed scripts in html
+- run scripts/build.cjs (WIP !!)
+
+Manually
+- comment <script src=xxxx>
+- insert <script>Copy the script file xxx.js</script>
+
+
+## Deployment (old) 
 
 npm run build
 ```
@@ -174,7 +204,3 @@ console.log('Fichier HTML autonome créé dans dist/index.html');
 Then run : node build.cjs
 
 
-
-## Camera control 
-
-https://andreasrohner.at/posts/Web%20Development/JavaScript/Simple-orbital-camera-controls-for-THREE-js/

@@ -3,18 +3,16 @@ import { textures } from '../components/textures_base64.js';
 import { TextureLoader } from 'three';
 
 class B64Loader {
-    // Utiliser une texture dans Three.js
+    static b64 = true
     b64load(src) {
-        
-        //console.log("loading b64 " + src)
-        //console.log(textures)
-        const b64 = textures[src]
-        //console.log(b64)
         const textureLoader = new TextureLoader();
-
-        const texture = textureLoader.load(b64);
-        //console.log("loading b64 " + src + " length " + b64.length + " width " + texture.width)
-        return (texture)
+        if (B64Loader.b64) {
+            const texture = textureLoader.load(textures[src]);
+            return (texture)
+        } else {
+            const texture = new TextureLoader().load('textures/' + src)
+            return (texture)
+        }
         //const material = new THREE.MeshBasicMaterial({ map: texture });
     }
 }

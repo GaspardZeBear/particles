@@ -2,9 +2,9 @@ const fs = require('fs');
 const path = require('path');
 
 // Répertoire contenant les images
-const imagesDir = './textures/'; // Remplacez par le chemin de votre répertoire
+const imagesDir = '../textures/'; // Remplacez par le chemin de votre répertoire
 // Fichier de sortie JSON
-const outputFile = './textures/textures_base64.js'; // Fichier JSON où les images en base64 seront enregistrées
+const outputFile = '../src/components/textures_base64.js';
 
 // Fonction pour lire les fichiers .jpg dans un répertoire
 function readJpgFiles(dir) {
@@ -49,8 +49,8 @@ async function convertImagesToBase64JSON() {
       const base64 = await fileToBase64(filePath);
       result[file] = `data:image/jpeg;base64,${base64}`;
     }
-
-    fs.writeFile(outputFile, JSON.stringify(result, null, 2), (err) => {
+    let buffer = 'const textures=' + JSON.stringify(result, null, 2) + ';export {textures}'
+    fs.writeFile(outputFile, buffer, (err) => {
       if (err) {
         console.error('Erreur lors de l\'écriture du fichier de sortie:', err);
         return;

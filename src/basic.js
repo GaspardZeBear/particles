@@ -1,3 +1,4 @@
+// @ts-nocheck
 //import * as THREE from "three";
 import * as THREE from '../node_modules/three/build/three.module.js';
 //import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -13,91 +14,61 @@ import ParticlesMesh from "./classes/ParticlesMesh.js";
 import { createBowls } from "./components/bowls.js";
 import { createPlaneBackground } from "./components/background.js";
 import { B64Loader } from './classes/B64Loader.js';
+import { BasicParams as P} from './params/BasicParams.js';
 //import { GUI} from 'lil-gui'
 
 
-console.log("Entering xxxbasic.js")
+console.log("Entering basic.js")
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
-let snowBallImg="alia00.jpg"
 if ( params.get("snowBallImg") ) {
-  snowBallImg=params.get("snowBallImg")
+  P.snowBallImg=params.get("snowBallImg")
 }
+B64Loader.b64=P.b64
+
 const renderer= createRenderer()
-const NEAR=10
-const SNOWGLOBERADIUS=75
 const camera = createCamera({
-  fov:60,
+  fov:P.cameraFov,
   ratio:window.innerWidth/window.innerHeight,
-  near:NEAR,
-  far:10000,
-  //z:500,
-  x:0,
-  y:0,
-  z:400
+  near:P.cameraNear,
+  far:P.cameraFar10000,
+  x:P.cameraX,
+  y:P.cameraY,
+  z:P.cameraZ
 })
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.update()
-
 const scene = createScene('black')
-//scene.add(createPlaneBackground("background.jpg",window.innerWidth,window.innerHeight,-600))
-//scene.fog=  new THREE.FogExp2( 0xff00ff, 0.0005 );
-//const gridHelper = new THREE.GridHelper(100,100,0xffffff,0xffffff);
-//scene.add(gridHelper);
-B64Loader.b64=false
-const Ximgs=[
-'Camille.jpg',
-'chess.glb',
-'EliseFabio.jpg',
-'enfants.jpg',
-'enfants1200.jpg',
-'Mael.jpg',
-'NousDeux.jpg',
-'NousDeux02.jpg',
-'pepette.jpg',
-'PereNoel.jpg',
-'alia00.jpg'
 
-]
-const imgs=['NousDeux.jpg']
-
-
-let bowlsCount=1
 let x=Math.random()*window.innerWidth/window.innerHeight
 let y=Math.random()*window.innerHeight
 let z=Math.random()*200
-let radius=SNOWGLOBERADIUS
-let angle=0
-let sign=1
-const THINGMESHRADIUS=20
-const BOWLSPERORBIT=1
 const meshes= createBowls({
-  bowlsCount:bowlsCount,
+  bowlsCount:P.bowlsCount,
   x:x,
   y:y,
   z:z,
   w:window.innerWidth,
   h:window.innerHeight,
-  imgs:imgs,
-  thingMeshRadius:20,
-  bowlsPerOrbit:BOWLSPERORBIT,
-  snowGlobeRadius:SNOWGLOBERADIUS
+  imgs:P.imgs,
+  thingMeshRadius:P.thingMeshRadius,
+  bowlsPerOrbit:P.bowlsPerOrbit,
+  snowGlobeRadius:P.snowGlobeRadius
 })
 
 for (let i=0; i<meshes.length; i++) {
   scene.add(meshes[i])
 }
 
-//const sMesh0=new SnowBallMesh(snowBallImg,SNOWGLOBERADIUS,500)
-const sMesh0=new SnowBallMesh('maison.jpg',SNOWGLOBERADIUS,500)
+const sMesh0=new SnowBallMesh(P.snowBallImg,P.snowGlobeRadius,P.flakesCount)
 sMesh0.initPosition({})
 scene.add(sMesh0)
 
-//const particles=new ParticlesMesh(1,0.1,100)
-//scene.add(particles)
 // Ajouter une lumière ambiante
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
+
+
 const spotLight = new THREE.SpotLight( 0xffffff, 10.0, 200,Math.PI/3,100,0 );
 scene.add( spotLight );
 const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 200,Math.PI,0,0.1 );
@@ -110,6 +81,14 @@ const spotLight3 = new THREE.SpotLight( 0x0000ff, 20.0, 200,Math.PI,0,0.1 );
 spotLight3.position.set(0,100,100)
 scene.add( spotLight3 );
 
+// Does not work !!!
+//for (let i=0; i<P.spotLights.length; i++) {
+//  scene.add( P.spotLights[i] );
+//}
+console.log(P.spotLights)
+//scene.add( P.spotLights[0] )
+
+
 var axisHelper = new THREE.AxesHelper(5000);
 //scene.add(axisHelper);
 
@@ -117,8 +96,6 @@ var axisHelper = new THREE.AxesHelper(5000);
 function animate(t) {
   requestAnimationFrame(animate);
   sMesh0.move()
-  //particles.move()
-  //particles.geometry.getAttribute('position').needsUpdate = true;
   for (let i=0; i<meshes.length; i++) {
     meshes[i].move()
   }

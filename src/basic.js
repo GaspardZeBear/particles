@@ -14,11 +14,16 @@ import ParticlesMesh from "./classes/ParticlesMesh.js";
 import { createBowls } from "./components/bowls.js";
 import { createPlaneBackground } from "./components/background.js";
 import { B64Loader } from './classes/B64Loader.js';
-import { BasicParams as P} from './params/BasicParams.js';
-//import { GUI} from 'lil-gui'
 
+//-----------Parm section ------------------------------------------
+// Here declare only one import as P !!!
+// quick an dirty way to get different profiles with name P 
+//import { BasicParams as P} from './params/BasicParams.js';
+//import { Alia as P} from './params/BasicParams.js';
+import { IsaFamily as P} from './params/BasicParams.js';
+//--------------------------------------------------------------
 
-console.log("Entering basic.js")
+console.log("Entering basic.js", P)
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
 if ( params.get("snowBallImg") ) {
@@ -69,15 +74,16 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 
 
-const spotLight = new THREE.SpotLight( 0xffffff, 10.0, 200,Math.PI/3,100,0 );
+const spotLight = new THREE.SpotLight( 0xffffff, 5.0, 0,Math.PI/3,0,0 );
+spotLight.position.set(0,0,300)
 scene.add( spotLight );
-const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 200,Math.PI,0,0.1 );
+const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 200,Math.PI/3,0,0.1 );
 spotLight1.position.set(-100,-100,100)
 scene.add( spotLight1 );
-const spotLight2 = new THREE.SpotLight( 0x00ff00, 5.0, 200,Math.PI,0,0.1 );
+const spotLight2 = new THREE.SpotLight( 0x00ff00, 5.0, 200,Math.PI/3,0,0.1 );
 spotLight2.position.set(100,100,100)
 scene.add( spotLight2 );
-const spotLight3 = new THREE.SpotLight( 0x0000ff, 20.0, 200,Math.PI,0,0.1 );
+const spotLight3 = new THREE.SpotLight( 0x0000ff, 5.0, 200,Math.PI/6,0,0.1 );
 spotLight3.position.set(0,100,100)
 scene.add( spotLight3 );
 
@@ -85,7 +91,7 @@ scene.add( spotLight3 );
 //for (let i=0; i<P.spotLights.length; i++) {
 //  scene.add( P.spotLights[i] );
 //}
-console.log(P.spotLights)
+//console.log(P.spotLights)
 //scene.add( P.spotLights[0] )
 
 

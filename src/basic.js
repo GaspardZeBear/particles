@@ -44,8 +44,8 @@ const scene = createScene('black')
 //scene.fog=  new THREE.FogExp2( 0xff00ff, 0.0005 );
 //const gridHelper = new THREE.GridHelper(100,100,0xffffff,0xffffff);
 //scene.add(gridHelper);
-B64Loader.b64=true
-const imgs=[
+B64Loader.b64=false
+const Ximgs=[
 'Camille.jpg',
 'chess.glb',
 'EliseFabio.jpg',
@@ -59,9 +59,10 @@ const imgs=[
 'alia00.jpg'
 
 ]
+const imgs=['NousDeux.jpg']
 
 
-let bowlsCount=20
+let bowlsCount=1
 let x=Math.random()*window.innerWidth/window.innerHeight
 let y=Math.random()*window.innerHeight
 let z=Math.random()*200
@@ -69,9 +70,9 @@ let radius=SNOWGLOBERADIUS
 let angle=0
 let sign=1
 const THINGMESHRADIUS=20
-const BOWLSPERORBIT=6
+const BOWLSPERORBIT=1
 const meshes= createBowls({
-  bowlsCount:20,
+  bowlsCount:bowlsCount,
   x:x,
   y:y,
   z:z,
@@ -79,7 +80,7 @@ const meshes= createBowls({
   h:window.innerHeight,
   imgs:imgs,
   thingMeshRadius:20,
-  bowlsPerOrbit:4,
+  bowlsPerOrbit:BOWLSPERORBIT,
   snowGlobeRadius:SNOWGLOBERADIUS
 })
 

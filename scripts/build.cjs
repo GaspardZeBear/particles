@@ -7,11 +7,11 @@ const jsContent = fs.readFileSync(path.join(__dirname, '..\\dist\\assets\\js\\ba
 
 // Remplacer la balise script dans le HTML
 const finalHtml = htmlContent.replace(
-  '<script type="module" crossorigin src="/assets/basic.js"></script>',
+  `<script type="module" crossorigin src="./assets/js/basic.js"></script>`,
   `<script>${jsContent}</script>`
 );
 
 // Écrire le fichier final
-fs.writeFileSync(path.join(__dirname, '', '..\\dist\\basic.html'), finalHtml, 'utf8');
+fs.writeFileSync(path.join(__dirname, '', '..\\dist\\target.html'), finalHtml, 'utf8');
 
-console.log('Fichier HTML autonome créé dans dist/basic.html');
+console.log('Fichier HTML autonome créé dans dist/target.html');

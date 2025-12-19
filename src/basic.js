@@ -18,12 +18,16 @@ import { B64Loader } from './classes/B64Loader.js';
 //-----------Parm section ------------------------------------------
 // Here declare only one import as P !!!
 // quick an dirty way to get different profiles with name P 
-//import { BasicParams as P} from './params/BasicParams.js';
+import { BasicParams } from './params/BasicParams.js';
 //import { Alia as P} from './params/BasicParams.js';
-import { IsaFamily as P} from './params/BasicParams.js';
+//import { IsaFamily as P} from './params/BasicParams.js';
 //--------------------------------------------------------------
 
-console.log("Entering basic.js", P)
+console.log("Entering basic.js")
+BasicParams.setProfile('Test')
+let P=BasicParams.getProfile().constructor
+//console.log("P", P)
+//console.log("PPimgs", P.imgs)
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
 if ( params.get("snowBallImg") ) {

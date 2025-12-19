@@ -19,8 +19,7 @@ class ThingMesh extends Mesh {
     this.setGeometry()
     //const texture = new TextureLoader().load('textures/' + zTexture)
     const texture0 = new B64Loader().b64load(zTexture)
-    //const texture0 = new B64Loader().b64load('pepette.jpg')
- 
+     
     const material0 = new MeshPhongMaterial({
       map: texture0,
       color: 0xffffff,
@@ -30,27 +29,15 @@ class ThingMesh extends Mesh {
       //depthWrite: true,
       wireframe: false
     });
-
     
-    //this.mesh = new Mesh(this.geometry, this.material);
-    this.mesh = new Mesh(this.geometry, material0);
-    // Ajout fils de fer
-    this.add(this.mesh)
-    const wireMat = new MeshBasicMaterial({
-      color: 0xff00ff,
-      wireframe: true
-    })
-    const wireMesh = new Mesh(this.geometry, wireMat)
     this.meshMover = new MeshMover(this)
-    //this.add(wireMesh)
+    this.add(new Mesh(this.geometry, material0))
   }
 
   setGeometry() {
-    this.geometry = new IcosahedronGeometry(8, 10)
     this.geometry = new SphereGeometry(this.radius, 32, 32);
     //this.geometry = new BoxGeometry( 5,5, 5 );
   }
-
   
 
   initPosition(x, y, z, orbit, angle, angularSpeed) {

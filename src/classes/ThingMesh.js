@@ -40,8 +40,8 @@ class ThingMesh extends Mesh {
   }
   
 
-  initPosition(x, y, z, orbit, angle, angularSpeed) {
-    this.meshMover.initPosition(x, y, z, orbit, angle, angularSpeed)
+  initPosition(orbit, angle, angularSpeed) {
+    this.meshMover.initPosition(orbit, angle, angularSpeed)
   }
 
   move() {

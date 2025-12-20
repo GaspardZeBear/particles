@@ -1,10 +1,10 @@
 //------------------------------------------------------------- 
 class Alia {
     static b64 = false
-    static imgs = ['alia01.jpg','alia002x.jpg']
+    static imgs = ['alia00.jpg','alia002x.jpg','alia002x.jpg','alia022x.jpg']
     static snowBallImg = 'alia00.jpg'
-    static bowlsCount = 15
-    static bowlsPerOrbit = 8
+    static bowlsCount = 5
+    static bowlsPerOrbit = 5
     static snowGlobeRadius = 75
     static thingMeshRadius = 20
     static flakesCount = 500
@@ -20,21 +20,21 @@ class Alia {
 //------------------------------------------------------------- 
 class IsaFamily {
     static imgs = [
-        'Camille.jpg',
-        'EliseFabio.jpg',
-        'enfants.jpg',
-        'enfants1200.jpg',
+        'Camille2x.jpg',
+        'Fabio2x2x.jpg',
         'Mael.jpg',
-        'NousDeux.jpg',
-        'NousDeux02.jpg',
-        'pepette.jpg',
+        'MaelPereNoel2x.jpg',
+        'NousDeux2x.jpg',
+        'NousDeux2x2x.jpg',
+        'NousDeux022x.jpg',
+        'Pepette2x.jpg',
         'PereNoel.jpg',
         //'alia00.jpg'
     ]
     static b64 = false
     static snowBallImg = 'maison.jpg'
-    static bowlsCount = 15
-    static bowlsPerOrbit = 3
+    static bowlsCount = 10
+    static bowlsPerOrbit = 6
     static snowGlobeRadius = 75
     static thingMeshRadius = 20
     static flakesCount = 500

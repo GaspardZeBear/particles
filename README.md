@@ -159,11 +159,20 @@ Create dist dir
 ```
 
 To run without http server and avoid CORS problem, embed scripts in html
-- run scripts/build.cjs (WIP !!)
+- run python scripts/ToStatic.py (only for basic )
+
 
 Manually
 - comment <script src=xxxx>
 - insert <script>Copy the script file xxx.js</script>
+
+```
+Note : scripts/build.cjs produces random results, and final htm files often crashs.
+Idem for manual.
+Temporary fix : create from zero an html file 
+ (echo "<html><body><script>" && cat ../dist/assets/js/basic.js && echo "</script></body></html>") > z.htm
+ (WIP !!)
+ ```
 
 
 ## Deployment (old) 

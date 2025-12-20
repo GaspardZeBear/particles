@@ -24,16 +24,18 @@ import { BasicParams } from './params/BasicParams.js';
 //--------------------------------------------------------------
 
 console.log("Entering basic.js")
-BasicParams.setProfile('Test')
+BasicParams.setProfile('Alia')
 let P=BasicParams.getProfile().constructor
 //console.log("P", P)
 //console.log("PPimgs", P.imgs)
+//B64Loader.b64=P.b64
+B64Loader.b64=false
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
 if ( params.get("snowBallImg") ) {
   P.snowBallImg=params.get("snowBallImg")
 }
-B64Loader.b64=P.b64
+
 
 const renderer= createRenderer()
 const camera = createCamera({
@@ -49,14 +51,8 @@ const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.update()
 const scene = createScene('black')
 
-let x=Math.random()*window.innerWidth/window.innerHeight
-let y=Math.random()*window.innerHeight
-let z=Math.random()*200
 const meshes= createBowls({
   bowlsCount:P.bowlsCount,
-  x:x,
-  y:y,
-  z:z,
   w:window.innerWidth,
   h:window.innerHeight,
   imgs:P.imgs,
@@ -78,7 +74,7 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 
 
-const spotLight = new THREE.SpotLight( 0xffffff, 5.0, 0,Math.PI/3,0,0 );
+const spotLight = new THREE.SpotLight( 0xffffff, 1.0, 0,Math.PI/3,0,0 );
 spotLight.position.set(0,0,300)
 scene.add( spotLight );
 const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 200,Math.PI/3,0,0.1 );

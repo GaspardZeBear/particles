@@ -1,10 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-
-// Répertoire contenant les images
-const imagesDir = '../textures/'; // Remplacez par le chemin de votre répertoire
-// Fichier de sortie JSON
+import fs from 'fs'
+import path from 'path'
+import  {BasicParams } from  '../src/params/BasicParams.mjs'
+const imagesDir = '../textures/'; 
 const outputFile = '../src/components/textures_base64.js';
+
+let profile=''
+// Vérifier les arguments de la ligne de commande
+if (process.argv.length >2) {
+  profile = process.argv[2];
+}
 
 // Fonction pour lire les fichiers .jpg dans un répertoire
 function readJpgFiles(dir) {
@@ -22,6 +26,7 @@ function readJpgFiles(dir) {
 
 // Fonction pour convertir un fichier en base64
 function fileToBase64(filePath) {
+  console.log("Converting " + filePath)
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, (err, data) => {
       if (err) {
@@ -35,9 +40,18 @@ function fileToBase64(filePath) {
 }
 
 // Fonction principale
-async function convertImagesToBase64JSON() {
+async function convertImagesToBase64JSON(profile) {
   try {
-    const files = await readJpgFiles(imagesDir);
+    let files = null
+    console.log("imagesDir" , imagesDir)
+    console.log("profile" , profile)
+    if ( profile.length > 0){
+      BasicParams.setProfile(profile)
+      files = BasicParams.getProfile().constructor.imgs;
+    } else {
+      files = await readJpgFiles(imagesDir);
+    }
+    console.log("files" , files)
     if (files.length === 0) {
       console.log('Aucun fichier .jpg trouvé dans le répertoire.');
       return;
@@ -63,4 +77,4 @@ async function convertImagesToBase64JSON() {
 }
 
 // Exécuter le script
-convertImagesToBase64JSON();
+convertImagesToBase64JSON(profile);

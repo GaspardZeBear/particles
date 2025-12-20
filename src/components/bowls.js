@@ -1,4 +1,4 @@
-import { BasicParams } from "../params/BasicParams.js";
+import { BasicParams } from "../params/BasicParams.mjs";
 import ThingMesh from "../classes/ThingMesh.js";
 
 function createBowls({ bowlsCount = 10, w = 400, h = 400, imgs = [], thingMeshRadius = 20, bowlsPerOrbit = 1, snowGlobeRadius = 50 }) {

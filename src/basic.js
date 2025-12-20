@@ -24,18 +24,16 @@ import { BasicParams } from './params/BasicParams.js';
 //--------------------------------------------------------------
 
 console.log("Entering basic.js")
-BasicParams.setProfile('Alia')
-let P=BasicParams.getProfile().constructor
-//console.log("P", P)
-//console.log("PPimgs", P.imgs)
-//B64Loader.b64=P.b64
-B64Loader.b64=false
+
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
-if ( params.get("snowBallImg") ) {
-  P.snowBallImg=params.get("snowBallImg")
+BasicParams.setProfile('Alia')
+if ( params.get("profile") ) {
+  BasicParams.setProfile(params.get("profile"))
 }
-
+let P=BasicParams.getProfile().constructor
+//B64Loader.b64=P.b64
+B64Loader.b64=false
 
 const renderer= createRenderer()
 const camera = createCamera({
@@ -86,14 +84,6 @@ scene.add( spotLight2 );
 const spotLight3 = new THREE.SpotLight( 0x0000ff, 5.0, 200,Math.PI/6,0,0.1 );
 spotLight3.position.set(0,100,100)
 scene.add( spotLight3 );
-
-// Does not work !!!
-//for (let i=0; i<P.spotLights.length; i++) {
-//  scene.add( P.spotLights[i] );
-//}
-//console.log(P.spotLights)
-//scene.add( P.spotLights[0] )
-
 
 var axisHelper = new THREE.AxesHelper(5000);
 //scene.add(axisHelper);

@@ -34,6 +34,9 @@ if ( params.get("profile") ) {
 let P=BasicParams.getProfile().constructor
 //B64Loader.b64=P.b64
 B64Loader.b64=false
+if ( params.get("b64") ) {
+  B64Loader.b64=params.get("b64")
+} 
 
 const renderer= createRenderer()
 const camera = createCamera({

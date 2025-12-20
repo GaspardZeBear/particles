@@ -18,6 +18,25 @@ class Alia {
 }
 
 //------------------------------------------------------------- 
+class Gigaro {
+    static b64 = false
+    static imgs = ['NousDeux2x.jpg','Juin.jpg',]
+    static snowBallImg = 'Gigaro2x.jpg'
+    static bowlsCount = 1
+    static bowlsPerOrbit = 1
+    static snowGlobeRadius = 150
+    static thingMeshRadius = 20
+    static flakesCount = 500
+
+    static cameraFov = 60
+    static cameraNear = 10
+    static cameraFar = 10000
+    static cameraX = 0
+    static cameraY = 0
+    static cameraZ = 400
+}
+
+//------------------------------------------------------------- 
 class IsaFamily {
     static imgs = [
         'Camille2x.jpg',
@@ -55,7 +74,7 @@ class Test {
 
     static bowlsCount = 15
     static bowlsPerOrbit = 3
-    static snowGlobeRadius = 75
+    static snowGlobeRadius = 25
     static thingMeshRadius = 20
     static flakesCount = 500
 
@@ -76,6 +95,7 @@ class BasicParams {
         console.log("getProfile()")
         switch(BasicParams.profile) {
             case 'Alia' : return(new Alia())
+            case 'Gigaro' : return(new Gigaro())
             case 'Test' : return(new Test())
             case 'IsaFamily' : return(new IsaFamily())
             default : return(null)

@@ -27,13 +27,13 @@ console.log("Entering basic.js")
 
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
-BasicParams.setProfile('IsaFamily')
+BasicParams.setProfile('Gigaro')
 if ( params.get("profile") ) {
   BasicParams.setProfile(params.get("profile"))
 }
 let P=BasicParams.getProfile().constructor
 B64Loader.b64=P.b64
-//B64Loader.b64=false
+B64Loader.b64=true
 if ( params.get("b64") ) {
   B64Loader.b64=params.get("b64")
 } 

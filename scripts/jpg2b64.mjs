@@ -48,6 +48,7 @@ async function convertImagesToBase64JSON(profile) {
     if ( profile.length > 0){
       BasicParams.setProfile(profile)
       files = BasicParams.getProfile().constructor.imgs;
+      files.push(BasicParams.getProfile().constructor.snowBallImg);
     } else {
       files = await readJpgFiles(imagesDir);
     }

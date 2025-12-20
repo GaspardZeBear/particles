@@ -1,12 +1,12 @@
 import fs from 'fs'
 import path from 'path'
-import  {BasicParams } from  '../src/params/BasicParams.mjs'
-const imagesDir = '../textures/'; 
+import { BasicParams } from '../src/params/BasicParams.mjs'
+const imagesDir = '../textures/';
 const outputFile = '../src/components/textures_base64.js';
 
-let profile=''
+let profile = ''
 // Vérifier les arguments de la ligne de commande
-if (process.argv.length >2) {
+if (process.argv.length > 2) {
   profile = process.argv[2];
 }
 
@@ -15,10 +15,14 @@ function readJpgFiles(dir) {
   return new Promise((resolve, reject) => {
     fs.readdir(dir, (err, files) => {
       if (err) {
+        console.log("err readJpgFiles")
         reject(err);
         return;
       }
-      const jpgFiles = files.filter(file => path.extname(file).toLowerCase() === '.jpg');
+      const jpgFiles = files
+        .filter(file => file.length > 0)
+        .filter(file => !file.endsWith("\\"))
+        .filter(file => path.extname(file).toLowerCase() === '.jpg');
       resolve(jpgFiles);
     });
   });
@@ -30,11 +34,14 @@ function fileToBase64(filePath) {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, (err, data) => {
       if (err) {
-        reject(err);
-        return;
+        console.log("err fileToBase64")
+        //reject(err);
+        //return;
+        resolve('')
+      } else {
+        const base64 = Buffer.from(data).toString('base64');
+        resolve(base64);
       }
-      const base64 = Buffer.from(data).toString('base64');
-      resolve(base64);
     });
   });
 }
@@ -43,16 +50,16 @@ function fileToBase64(filePath) {
 async function convertImagesToBase64JSON(profile) {
   try {
     let files = null
-    console.log("imagesDir" , imagesDir)
-    console.log("profile" , profile)
-    if ( profile.length > 0){
+    console.log("imagesDir", imagesDir)
+    console.log("profile", profile)
+    if (profile.length > 0) {
       BasicParams.setProfile(profile)
       files = BasicParams.getProfile().constructor.imgs;
       files.push(BasicParams.getProfile().constructor.snowBallImg);
     } else {
       files = await readJpgFiles(imagesDir);
     }
-    console.log("files" , files)
+    console.log("files", files)
     if (files.length === 0) {
       console.log('Aucun fichier .jpg trouvé dans le répertoire.');
       return;
@@ -62,7 +69,9 @@ async function convertImagesToBase64JSON(profile) {
     for (const file of files) {
       const filePath = path.join(imagesDir, file);
       const base64 = await fileToBase64(filePath);
-      result[file] = `data:image/jpeg;base64,${base64}`;
+      if (base64.length > 0) {
+        result[file] = `data:image/jpeg;base64,${base64}`;
+      }
     }
     let buffer = 'const textures=' + JSON.stringify(result, null, 2) + ';export {textures}'
     fs.writeFile(outputFile, buffer, (err) => {

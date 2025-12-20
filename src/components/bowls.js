@@ -11,7 +11,8 @@ function createBowls({ bowlsCount = 10, w = 400, h = 400, imgs = [], thingMeshRa
     radius += thingMeshRadius
     console.log(radius, )
     //if ( radius > BasicParams.getProfile()/10) {
-    if ( radius > cameraZ) {
+    if ( radius > cameraZ *0.75 ) {
+      console.log("Radius exceed cameraZ, stop bowls generation")
       break
       //radius = snowGlobeRadius
     }

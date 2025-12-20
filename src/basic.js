@@ -27,7 +27,7 @@ console.log("Entering basic.js")
 
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
-BasicParams.setProfile('Gigaro')
+BasicParams.setProfile('Full')
 if ( params.get("profile") ) {
   BasicParams.setProfile(params.get("profile"))
 }
@@ -75,7 +75,7 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 
 
-const spotLight = new THREE.SpotLight( 0xffffff, 1.0, 0,Math.PI/3,0,0 );
+const spotLight = new THREE.SpotLight( 0xffffff, 0.5, 0,Math.PI/3,0,0 );
 spotLight.position.set(0,0,300)
 scene.add( spotLight );
 const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 200,Math.PI/3,0,0.1 );

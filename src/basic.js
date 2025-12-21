@@ -12,6 +12,7 @@ import ThingMesh from "./classes/ThingMesh.js";
 import SnowBallMesh from "./classes/SnowBallMesh.js";
 import ParticlesMesh from "./classes/ParticlesMesh.js";
 import { createBowls } from "./components/bowls.js";
+import { b64, profile } from "./components/paramSet.mjs";
 import { createPlaneBackground } from "./components/background.js";
 import { B64Loader } from './classes/B64Loader.js';
 
@@ -27,13 +28,12 @@ console.log("Entering basic.js")
 
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
-BasicParams.setProfile('Full')
+BasicParams.setProfile(profile)
 if ( params.get("profile") ) {
   BasicParams.setProfile(params.get("profile"))
 }
 let P=BasicParams.getProfile().constructor
-B64Loader.b64=P.b64
-B64Loader.b64=true
+B64Loader.b64=b64
 if ( params.get("b64") ) {
   B64Loader.b64=params.get("b64")
 } 

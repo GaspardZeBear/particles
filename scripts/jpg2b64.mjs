@@ -73,7 +73,8 @@ async function convertImagesToBase64JSON(profile) {
         result[file] = `data:image/jpeg;base64,${base64}`;
       }
     }
-    let buffer = 'const textures=' + JSON.stringify(result, null, 2) + ';export {textures}'
+    let buffer="// Automatically generated file, do not modify\n"
+    buffer += 'const textures=' + JSON.stringify(result, null, 2) + ';export {textures}'
     fs.writeFile(outputFile, buffer, (err) => {
       if (err) {
         console.error('Erreur lors de l\'écriture du fichier de sortie:', err);

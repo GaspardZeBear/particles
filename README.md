@@ -1,123 +1,33 @@
 # particles
 
-Display particles flow
+Mainly basic : displays a central snowball with bowls flying around
+
+Requirements :
+- finally run without server : only one big html file !
+- quickly build a final customized file
 
 ## Files 
 
 ### Structure
 ```
-getting-started-with-three
-- nodes_modules
-index.html
-- src
-  particles.js
-  vite.config.js (utile ????) 
-jsconfig.json
-package.json
-package-lock.json (automatique)
-```
+particles/
+  - index.html
+  - basic.html
+  - vite.config.js 
+  nodes_modules/
+  scripts/ : scripts to prepare and build the project
+  src/
+    - basic.js
+    classes/
+    components/ : functions, mainly for three
+    params/ : classes to customize the project
+    textures/ : images
 
-### index.html
 ```
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Getting Started with Three.js</title>
-    <style>
-      body {
-        margin: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <script type="module" src="/src/particles.js"></script>
-  </body>
-</html>
-```
-
-### src/vite.config.json
-```
-import { defineConfig } from 'vite';
-import { resolve } from 'path';
-
-export default defineConfig({
-base: './', // Permet de charger les fichiers localement
-resolve: {
-    alias: {
-      // Alias pour Three.js
-      three: resolve('./node_modules/three/src/Three.js'),
-      // Alias pour OrbitControls
-      'three/addons/controls/OrbitControls': resolve('./node_modules/three/examples/jsm/controls/OrbitControls.js'),
-    },
-  },
-  build: {
-    outDir: 'dist', // Dossier de sortie
-    emptyOutDir: true, // Vide le dossier de sortie avant le build
-    rollupOptions: {
-      input: {
-        // Point d'entrée : index.html à la racine
-        main: resolve(__dirname, 'index.html'),
-      },
-    },
-  },
-});
-```
-
-### jsconfig.json
-```
-{
-  "compilerOptions": {
-    "checkJs": true,
-    "module": "ESNext",
-    "target": "ESNext",
-    "paths": {
-      "three": ["node_modules/three/src/Three"],
-      "three/addons/*": ["node_modules/three/examples/jsm/*"]
-    }
-  },
-  "include": ["src/**/*"]
-}
-```
-### package.json
-```
-{
-  "name": "threestars-project",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "three": "^0.132.2"
-  },
-  "devDependencies": {
-    "@types/three": "^0.181.0",
-    "vite": "^7.2.6"
-  }
-}
-```
-
-
-### src/particles.js
-```
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-
-const w=window.innerWidth;
-const h=window.innerHeight;
-.....
-```
-
-
 
 ## Project setup
 
-Install node.js sur windows1
+Install node.js sur windows
 
 ```
 npm init -y
@@ -135,81 +45,71 @@ rm -rf .\node_modules\
 rm -rf package-lock.json
 npm install three@latest
 ```
+Note : npm list --no-unicode > requirements.txt
 
 ## Embed images 
 
-Note : images used for textures are data uris in a map called textures. Useful to run from explorer witout server
+Note : images used for textures are data uris in a map called textures. <br>
+Useful to run from explorer without server
 
-- drop jpg files in textures
-- from scripts/ run : node jpg2b64.js
--- this will generate a js module components/textures_b64.js
-- cleanup components/textures_b64.js (remove unwanted images)
+- from scripts/ run : node jpg2b64.mjs <profile>
+  -- this will generate a js module components/textures_b64.js containing images from texture  base 64 encoded 
+  -- note 
+    --- <profile> refers to class in params/BasicParams.mjs
+    --- if no <profile> is given, all images are included ! Avoid (generate hug target) !
+    
 
-## Deployment (new) 
+- cleanup components/textures_b64.js (remove unwanted images) if necessary
+
+## Deployment
+
+### Steps :
+
+0. Prepare images in texture
+1. Create profile in BasicParams.js (create profile class and setup getProfile())
+2. Generate b64 : textures_b64.js : node jpg2b64.mjs (see "embed images")
+3. Verify b64 flag in basic.js (must be true)
+4. build static site in dist\ : npm run build
+5. build big dist/target.html : npm build.mjs
+6. open target.html from File explorer
+
+FAQ :
+
+- if only white bowls, check textures_b64.js. Check b64 flag !
+- F12 is your friend
+
+### Detail
 
 npm run build
-```
+<pre>
 Create dist dir
-- dist
+- dist/
   index.html
   basic.html
   ...
-  - assets
-    basic.js
-```
+  - assets/
+    - js/
+      --basic.js
+</pre>>
 
-To run without http server and avoid CORS problem, embed scripts in html
-- run python scripts/ToStatic.py (only for basic )
+To run without http server and avoid CORS problem, embed scripts in html. 
+Only for basic : 
+
+- run python scripts/ToStatic.py 
+- or
+- npm build.mjs
 
 
 Manually
-- comment <script src=xxxx>
-- insert <script>Copy the script file xxx.js</script>
-
-```
-Note : scripts/build.cjs produces random results, and final htm files often crashs.
-Idem for manual.
-Temporary fix : create from zero an html file 
+<pre>
  (echo "<html><body><script>" && cat ../dist/assets/js/basic.js && echo "</script></body></html>") > z.htm
- (WIP !!)
- ```
+</pre>
 
+## Tips 
 
-## Deployment (old) 
+Images projection on bowls give random results.
 
-npm run build
-```
-Create dist dir
-- dist
-  index.html
-  - assets
-    index-CBwx6CF7.js
-```
+One way to get better projections is to generate "2x" images : images contining 2 times side-by-side base image 
 
-Can only be served by http server (not from file because CORS problem)
-
-To create a big html file, quick and dirty, create build.cjs in dist :
-
-```
-const fs = require('fs');
-const path = require('path');
-
-// Lire les fichiers
-const htmlContent = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-const jsContent = fs.readFileSync(path.join(__dirname, 'assets\\index-CBwx6CF7.js'), 'utf8');
-
-// Remplacer la balise script dans le HTML
-const finalHtml = htmlContent.replace(
-  '<script type="module" crossorigin src="/assets/index-CBwx6CF7.js"></script>',
-  `<script>${jsContent}</script>`
-);
-
-// Écrire le fichier final
-fs.writeFileSync(path.join(__dirname, '', 'index.html'), finalHtml, 'utf8');
-
-console.log('Fichier HTML autonome créé dans dist/index.html');
-```
-
-Then run : node build.cjs
-
+node jpg2x.mjs helps
 

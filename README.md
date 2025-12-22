@@ -115,5 +115,20 @@ Images projection on bowls give random results.
 
 One way to get better projections is to generate "2x" images : images contining 2 times side-by-side base image 
 
-node jpg2x.mjs helps
+## wsl terminal in VSCod
+
+<pre>
+PS C:\Users\gzbze\threeProjects\particles> bash   
+
+ubu@A6:/mnt/c/Users/gzbze/threeProjects/particles$ /mnt/c/Program\ Files/nodejs/node.exe
+Welcome to Node.js v24.11.1.
+Type ".help" for more information.
+> .exit
+
+ubu@A6:/mnt/c/Users/gzbze/threeProjects/particles$ /mnt/c/Program\ Files/nodejs/npm start
+> particles@1.0.0 start
+....
+
+</pre>
+
 

@@ -1,7 +1,14 @@
 //------------------------------------------------------------- 
 class Alia {
     static b64 = false
-    static imgs = ['alia00.jpg','alia003x.jpg','alia002x.jpg','alia002x.jpg','alia022x.jpg']
+    static imgs = [
+        'alia00_0_0_255_3x.jpg',
+        'alia00_200_128_200_3x.jpg',
+        'alia00_255_0_0_3x.jpg',
+        'alia00_0_255_0_3x.jpg',
+        'alia00_0_255_0_3x.jpg',
+        'alia00_200_128_200_2x.jpg',
+    ]
     static snowBallImg = 'alia00.jpg'
     static bowlsCount = 5
     static bowlsPerOrbit = 5

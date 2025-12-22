@@ -23,13 +23,28 @@ function readJpgFiles(dir) {
 }
 
 //----------------------------------------
-function generate2x(imagesDir, inputFile) {
+function getBackgroundAsString(background) {
+  return( `_${background.r}_${background.g}_${background.b}_`)
+}
+
+//----------------------------------------
+function getFilesPaths(imagesDir, inputFile,background,suffix) {
   const inputImagePath = path.join(imagesDir, inputFile)
   console.log(inputImagePath)
-  const outputImagePath = path.join(imagesDir, inputFile.replace('.jpg', '2x.jpg'))
+  const outputImagePath = path.join(imagesDir, inputFile.replace('.jpg', getBackgroundAsString(background) + suffix + '.jpg'))
   console.log(outputImagePath)
+  return({inputImagePath:inputImagePath,outputImagePath:outputImagePath})
+}
 
-  sharp(inputImagePath)
+//----------------------------------------
+function generate2x(imagesDir, inputFile) {
+  //const inputImagePath = path.join(imagesDir, inputFile)
+  //console.log(inputImagePath)
+  //const outputImagePath = path.join(imagesDir, inputFile.replace('.jpg', getBackgroundAsString(background) + '2x.jpg'))
+  //console.log(outputImagePath)
+  const paths=getFilesPaths(imagesDir, inputFile,background,'2x')
+
+  sharp(paths.inputImagePath)
     .metadata()
     .then(metadata => {
       const { width, height } = metadata;
@@ -46,12 +61,12 @@ function generate2x(imagesDir, inputFile) {
         }
       })
         .composite([
-          { input: inputImagePath, left: 0, top: borderHeight }, // Première copie de l'image
-          { input: inputImagePath, left: width, top: borderHeight } // Deuxième copie de l'image
+          { input: paths.inputImagePath, left: 0, top: borderHeight }, // Première copie de l'image
+          { input: paths.inputImagePath, left: width, top: borderHeight } // Deuxième copie de l'image
         ])
-        .toFile(outputImagePath)
+        .toFile(paths.outputImagePath)
         .then(() => {
-          console.log(`L'image ${outputImagePath} a été générée avec succès.`);
+          console.log(`L'image ${paths.outputImagePath} a été générée avec succès.`);
         })
         .catch(err => {
           console.error('Erreur lors de la génération de l\'image:', err);
@@ -64,21 +79,19 @@ function generate2x(imagesDir, inputFile) {
 
 //----------------------------------------
 function generate3x(imagesDir, inputFile, background) {
-  const inputImagePath = path.join(imagesDir, inputFile)
-  const outputImagePathNormalized = 'tmp.jpg'
-  console.log('inputImageFile', inputImagePath)
-  let colors=`_${background.r}_${background.g}_${background.b}_`
-  const outputImagePath = path.join(imagesDir, inputFile.replace('.jpg', colors+'3x.jpg'))
-  console.log('outputImagePath', outputImagePath)
-  console.log('outputImagePathNormalized', outputImagePathNormalized)
-
+  //const inputImagePath = path.join(imagesDir, inputFile)
+  //console.log('inputImageFile', inputImagePath)
+  //const outputImagePath = path.join(imagesDir, inputFile.replace('.jpg', getBackgroundAsString(background)+'3x.jpg'))
+  //console.log('outputImagePath', outputImagePath)
+  const paths=getFilesPaths(imagesDir, inputFile,background,'3x')
+  
   let imgBuffer = null
   const imgWidth = 256
   const width = 1024
   const height = 512
   const borderHeight = 128;
   const filer = 64; // Nouvelle hauteur avec les bandes noires
-  const image = sharp(inputImagePath)
+  const image = sharp(paths.inputImagePath)
     .resize(imgWidth)
     .toBuffer()
     .then((resizedImageBuffer) => {
@@ -95,21 +108,21 @@ function generate3x(imagesDir, inputFile, background) {
           { input: resizedImageBuffer, left: imgWidth + 1.5 * filer, top: borderHeight },
           { input: resizedImageBuffer, left: imgWidth * 2 + 3 * filer, top: borderHeight } // Deuxième copie de l'image
       ])
-      .toFile(outputImagePath)
+      .toFile(paths.outputImagePath)
       .then(() => {
-        console.log(`L'image ${outputImagePath} a été générée avec succès.`);
+        console.log(`Image ${paths.outputImagePath} generated.`);
       })
       .catch((err) => {
-        console.error('Erreur lors de la génération de l\'image:', err);
+        console.error('Error generating ${outputImagePath} ', err);
       });
    })
    .catch ((err) => {
-     console.error('Erreur lors du redimensionnement de l\'image:', err);
+     console.error('Error resizing ${inputImagePath}', err);
   });
 }
 
 //---------------------------------------- Fonction principale
-async function convertImagesTo2x(inputImagesDir, inputImageFile, background) {
+async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
   try {
     let files = []
     console.log("imagesDir", imagesDir)
@@ -165,5 +178,5 @@ let colors=rgb.split(',').map(Number)
 
 // Exécuter le script
 let background={r:colors[0],g:colors[1],b:colors[2]}
-convertImagesTo2x(imagesDir, inputImageFile, background);
+convertImagesToNx(imagesDir, inputImageFile, background);
 //convertImagesTo3x(imagesDir, inputImageFile);

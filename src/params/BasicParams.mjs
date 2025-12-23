@@ -2,17 +2,23 @@
 class Alia {
     static b64 = false
     static imgs = [
-        'alia00_0_0_255_3x.jpg',
-        'alia00_200_128_200_3x.jpg',
-        'alia00_255_0_0_3x.jpg',
-        'alia00_0_255_0_3x.jpg',
-        'alia00_0_255_0_3x.jpg',
-        'alia00_200_128_200_2x.jpg',
+        'alia00_background_3x.jpg',
+        'alia00_eruption_3x.jpg',
+        'alia00_Filaments_3x.jpg',
+        'alia00_Meduse_3x.jpg',
+        'alia00_purpleMoon_3x.jpg',
+        'alia00_redTexture_3x.jpg',
+        'alia00_Sapin_3x.jpg',
+        'alia00_Sapin01_3x.jpg',
+        'alia00_Sapin02_3x.jpg',
+        'alia00_Sperme_3x.jpg',
+        'alia00_turquoiseSea_3x.jpg',
     ]
-    static snowBallImg = 'alia00.jpg'
-    static bowlsCount = 5
+    static backgroundImg = 'myPaint.jpg'
+    static snowBallImg = 'GigaroDrone_128_128_128_2x.jpg'
+    static bowlsCount = 10
     static bowlsPerOrbit = 5
-    static snowGlobeRadius = 75
+    static snowGlobeRadius = 100
     static thingMeshRadius = 20
     static flakesCount = 500
 
@@ -21,7 +27,7 @@ class Alia {
     static cameraFar = 10000
     static cameraX = 0
     static cameraY = 0
-    static cameraZ = 400
+    static cameraZ = 500
 }
 
 //------------------------------------------------------------- 
@@ -29,51 +35,51 @@ class Full {
     static b64 = false
     static imgs = ['Camille.jpg',
         '',
-'Camille2x.jpg',
-'Elisabeth2x.jpg',
-'Elisabeth012x.jpg',
-'Fabio2x.jpg',
-'Fabio2x2x.jpg',
-'Gigaro2x.jpg',
-'GigaroStudio2x.jpg',
-'JoGato2x.jpg',
-'JoMaSki2x.jpg',
-'Juin2x.jpg',
-'LoJoHalloween2x.jpg',
-'LoJoMaAe2x.jpg',
-'LoJoMaAnniv2x.jpg',
-'LoJoMaBouee2x.jpg',
-'LoJoMaFiance2x.jpg',
-'LoJoMaGaufre2x.jpg',
-'LoJoMaHalloween2x.jpg',
-'LoJoMaSKi012x.jpg',
-'LoJoMaSki022x.jpg',
-'LoJoMaVoiture2x.jpg',
-'LoJoSki2x.jpg',
-'LoMaBalneo2x.jpg',
-'LoMaBoucherie2x.jpg',
-'LoMaHalloween2x.jpg',
-'LoMaManege2x.jpg',
-'LoMaMartroi2x.jpg',
-'LoMaMenage.jpg',
-'LoMer2x.jpg',
-'LoRose2x.jpg',
-'LoSceours2x.jpg',
-'MaGoto2x.jpg',
-'Mael2x.jpg',
-'MaelPereNoel2x.jpg',
-'NousDeux022x.jpg',
-'NousDeux2x.jpg',
-'NousDeux2x2x.jpg',
-'Pepette2x.jpg',
-'PereNoel.jpg',
-'background.jpg',
-'chritian2x.jpg',
-'enfants.jpg',
-'enfants1200.jpg',
-'maison2x.jpg',
-'pepette2x.jpg',
-]
+        'Camille2x.jpg',
+        'Elisabeth2x.jpg',
+        'Elisabeth012x.jpg',
+        'Fabio2x.jpg',
+        'Fabio2x2x.jpg',
+        'Gigaro2x.jpg',
+        'GigaroStudio2x.jpg',
+        'JoGato2x.jpg',
+        'JoMaSki2x.jpg',
+        'Juin2x.jpg',
+        'LoJoHalloween2x.jpg',
+        'LoJoMaAe2x.jpg',
+        'LoJoMaAnniv2x.jpg',
+        'LoJoMaBouee2x.jpg',
+        'LoJoMaFiance2x.jpg',
+        'LoJoMaGaufre2x.jpg',
+        'LoJoMaHalloween2x.jpg',
+        'LoJoMaSKi012x.jpg',
+        'LoJoMaSki022x.jpg',
+        'LoJoMaVoiture2x.jpg',
+        'LoJoSki2x.jpg',
+        'LoMaBalneo2x.jpg',
+        'LoMaBoucherie2x.jpg',
+        'LoMaHalloween2x.jpg',
+        'LoMaManege2x.jpg',
+        'LoMaMartroi2x.jpg',
+        'LoMaMenage.jpg',
+        'LoMer2x.jpg',
+        'LoRose2x.jpg',
+        'LoSceours2x.jpg',
+        'MaGoto2x.jpg',
+        'Mael2x.jpg',
+        'MaelPereNoel2x.jpg',
+        'NousDeux022x.jpg',
+        'NousDeux2x.jpg',
+        'NousDeux2x2x.jpg',
+        'Pepette2x.jpg',
+        'PereNoel.jpg',
+        'background.jpg',
+        'chritian2x.jpg',
+        'enfants.jpg',
+        'enfants1200.jpg',
+        'maison2x.jpg',
+        'pepette2x.jpg',
+    ]
     static snowBallImg = 'x.jpg'
     static bowlsCount = 20
     static bowlsPerOrbit = 10
@@ -92,10 +98,54 @@ class Full {
 //------------------------------------------------------------- 
 class Gigaro {
     static b64 = false
-    static imgs = ['NousDeux2x.jpg','Juin.jpg',]
-    static snowBallImg = 'Gigaro2x.jpg'
-    static bowlsCount = 1
-    static bowlsPerOrbit = 1
+    static imgs = [
+        'NousDeux2x.jpg',
+        'Juin.jpg',
+        'Elisabeth_200_0_0_2x.jpg',
+        'Elisabeth_200_0_0_3x.jpg',
+    ]
+    static backgroundImg = 'GigaroDrone.jpg'
+    static snowBallImg = 'GigaroDrone_128_128_128_3x.jpg'
+    static bowlsCount = 5
+    static bowlsPerOrbit = 5
+    static snowGlobeRadius = 150
+    static thingMeshRadius = 20
+    static flakesCount = 500
+
+    static cameraFov = 60
+    static cameraNear = 10
+    static cameraFar = 10000
+    static cameraX = 0
+    static cameraY = 0
+    static cameraZ = 400
+}
+
+//------------------------------------------------------------- 
+class MereNoel {
+    static b64 = false
+    static imgs = [
+        //'MereNoel.jpg',
+        'MereNoelCamille.jpg',
+        'MereNoelCamille_0_0_200_2x.jpg',
+        'MereNoelCamille_0_0_200_3x.jpg',
+        'MereNoelCamille_200_200_200_2x.jpg',
+        'MereNoelCamille_200_200_200_3x.jpg',
+        //'MereNoelIsa.jpg',
+        //'MereNoelIsa_200_0_0_2x.jpg',
+        'MereNoelIsa_200_0_0_3x.jpg',
+        'MereNoelIsa_200_200_200_2x.jpg',
+        'MereNoelIsa_200_200_200_3x.jpg',
+        'MereNoel_200_0_0_2x.jpg',
+        'MereNoel_200_0_0_3x.jpg',
+        'MereNoel_200_200_0_2x.jpg',
+        'MereNoel_200_200_0_3x.jpg',
+        'MereNoel_200_200_200_2x.jpg',
+        'MereNoel_200_200_200_3x.jpg',
+    ]
+    static backgroundImg = 'background.jpg'
+    static snowBallImg = 'MereNoel_200_0_0_2x.jpg'
+    static bowlsCount = 5
+    static bowlsPerOrbit = 8
     static snowGlobeRadius = 150
     static thingMeshRadius = 20
     static flakesCount = 500
@@ -122,7 +172,8 @@ class IsaFamily {
         'PereNoel.jpg',
         //'alia00.jpg'
     ]
-    static b64 = true
+
+    static backgroundImg = 'background.jpg'
     static snowBallImg = 'maison.jpg'
     static bowlsCount = 10
     static bowlsPerOrbit = 6
@@ -141,7 +192,8 @@ class IsaFamily {
 //------------------------------------------------------------- 
 class Test {
     static b64 = false
-    static imgs = ['NousDeux2x.jpg','alia002x.jpg']
+    static imgs = ['NousDeux2x.jpg', 'alia002x.jpg']
+    static backgroundImg = 'background.jpg'
     static snowBallImg = 'maison.jpg'
 
     static bowlsCount = 15
@@ -160,21 +212,22 @@ class Test {
 
 class BasicParams {
     static profile = 'Test'
-    static setProfile(name='Test') {
-        BasicParams.profile=name
+    static setProfile(name = 'Test') {
+        BasicParams.profile = name
     }
     static getProfile() {
         console.log("getProfile()")
-        switch(BasicParams.profile) {
-            case 'Alia' : return(new Alia())
-            case 'Gigaro' : return(new Gigaro())
-            case 'Test' : return(new Test())
-            case 'IsaFamily' : return(new IsaFamily())
-            case 'Full' : return(new Full())
-            default : return(null)
+        switch (BasicParams.profile) {
+            case 'Alia': return (new Alia())
+            case 'Gigaro': return (new Gigaro())
+            case 'Test': return (new Test())
+            case 'IsaFamily': return (new IsaFamily())
+            case 'MereNoel': return (new MereNoel())
+            case 'Full': return (new Full())
+            default: return (null)
         }
     }
 }
 
-export {BasicParams}
+export { BasicParams }
 

@@ -28,19 +28,21 @@ class MeshMover {
     this.angularSpeed = angularSpeed
     const angles =this.getInitialAnglesCoordinates()
     this.theta=angle
+    //this.theta=0
     this.phi=angles.phi
     this.move()
   }
 
   move() {
     const pos = this.getXYZ(this.orbit, this.theta, this.phi)
-    this.theta += this.angularSpeed / 8
-    this.phi += this.angularSpeed / 8
+    this.theta += this.angularSpeed / (5+2*Math.cos(this.phi))
+    this.phi += this.angularSpeed / (6+2*Math.cos(this.phi))
     this.mesh.position.x = pos.x
     this.mesh.position.y = pos.y
     this.mesh.position.z = pos.z
-    this.mesh.rotateY(Math.PI / 300)
-    this.mesh.rotateZ(Math.PI / 600)
+    this.mesh.rotateX(Math.random() * Math.PI / 600)
+    this.mesh.rotateY(Math.random() * Math.PI / 300)
+    this.mesh.rotateZ(Math.random() * Math.PI / 600)
   }
 
 

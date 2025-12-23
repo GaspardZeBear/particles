@@ -50,7 +50,9 @@ const camera = createCamera({
 })
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.update()
-const scene = createScene('black')
+const scene = createScene('')
+const sceneBackground=createPlaneBackground(P.backgroundImg,window.innerWidth,window.innerHeight,-1000)
+scene.background=sceneBackground
 
 const meshes= createBowls({
   bowlsCount:P.bowlsCount,
@@ -75,10 +77,10 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 
 
-const spotLight = new THREE.SpotLight( 0xffffff, 0.5, 0,Math.PI/3,0,0 );
-spotLight.position.set(0,0,300)
+const spotLight = new THREE.SpotLight( 0xffffff, 3, 0,Math.PI/3,0,0 );
+spotLight.position.set(0,0,P.cameraZ)
 scene.add( spotLight );
-const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 200,Math.PI/3,0,0.1 );
+const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 0,Math.PI/3,0,0.1 );
 spotLight1.position.set(-100,-100,100)
 scene.add( spotLight1 );
 const spotLight2 = new THREE.SpotLight( 0x00ff00, 5.0, 200,Math.PI/3,0,0.1 );

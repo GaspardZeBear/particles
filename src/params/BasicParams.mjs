@@ -190,6 +190,48 @@ class IsaFamily {
 }
 
 //------------------------------------------------------------- 
+class Joevin {
+    static b64 = false
+    static imgs = []
+    static snowBallImg = 'JoMaSki_JoMaison_3x.jpg'
+    static backgroundImg = 'JoMaison01.jpg'
+    //static snowBallImg = 'myPaint.jpg'
+
+    static bowlsCount = 0
+    static bowlsPerOrbit = 0
+    static snowGlobeRadius = 150
+    static thingMeshRadius = 20
+    static flakesCount = 1000
+
+    static cameraFov = 60
+    static cameraNear = 10
+    static cameraFar = 10000
+    static cameraX = 0
+    static cameraY = 0
+    static cameraZ = 400
+}
+//------------------------------------------------------------- 
+class Loriane {
+    static b64 = false
+    static imgs = []
+    static snowBallImg = 'LoSecours_Sapin01_3x.jpg'
+    static backgroundImg = 'background.jpg'
+    //static snowBallImg = 'maison.jpg'
+
+    static bowlsCount = 0
+    static bowlsPerOrbit = 0
+    static snowGlobeRadius = 150
+    static thingMeshRadius = 20
+    static flakesCount = 1000
+
+    static cameraFov = 60
+    static cameraNear = 10
+    static cameraFar = 10000
+    static cameraX = 0
+    static cameraY = 0
+    static cameraZ = 400
+}
+//------------------------------------------------------------- 
 class Test {
     static b64 = false
     static imgs = ['NousDeux2x.jpg', 'alia002x.jpg']
@@ -220,6 +262,9 @@ class BasicParams {
         switch (BasicParams.profile) {
             case 'Alia': return (new Alia())
             case 'Gigaro': return (new Gigaro())
+                        case 'Loriane' : return(new Loriane())
+                        case 'Joevin' : return(new Joevin())
+            case 'Test': return (new Test())
             case 'Test': return (new Test())
             case 'IsaFamily': return (new IsaFamily())
             case 'MereNoel': return (new MereNoel())
@@ -230,4 +275,6 @@ class BasicParams {
 }
 
 export { BasicParams }
+
+
 

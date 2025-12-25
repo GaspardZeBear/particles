@@ -1,14 +1,9 @@
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url';
 import { BasicParams } from '../src/params/BasicParams.mjs'
 const imagesDir = '../textures/';
 const outputFile = '../src/components/textures_base64.js';
-
-let profile = ''
-// Vérifier les arguments de la ligne de commande
-if (process.argv.length > 2) {
-  profile = process.argv[2];
-}
 
 // Fonction pour lire les fichiers .jpg dans un répertoire
 function readJpgFiles(dir) {
@@ -47,7 +42,7 @@ function fileToBase64(filePath) {
 }
 
 // Fonction principale
-async function convertImagesToBase64JSON(profile) {
+export async function convertImagesToBase64JSON(profile) {
   try {
     let files = null
     console.log("imagesDir", imagesDir)
@@ -74,7 +69,7 @@ async function convertImagesToBase64JSON(profile) {
         result[file] = `data:image/jpeg;base64,${base64}`;
       }
     }
-    let buffer="// Automatically generated file, do not modify\n"
+    let buffer = "// Automatically generated file, do not modify\n"
     buffer += 'const textures=' + JSON.stringify(result, null, 2) + ';export {textures}'
     fs.writeFile(outputFile, buffer, (err) => {
       if (err) {
@@ -88,5 +83,20 @@ async function convertImagesToBase64JSON(profile) {
   }
 }
 
-// Exécuter le script
-convertImagesToBase64JSON(profile);
+//--------------------------------- Entry point command line -----------------------
+if (import.meta.main) {
+  console.log("From CLI")
+  let profile = ''
+  // Vérifier les arguments de la ligne de commande
+  if (process.argv.length > 2) {
+    profile = process.argv[2];
+  } else {
+    console.log("profile required")
+    process.exit(1)
+  }
+  convertImagesToBase64JSON(profile);
+} 
+
+
+//export {convertImagesToBase64JSON}
+

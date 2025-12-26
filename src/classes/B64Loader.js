@@ -17,7 +17,11 @@ class B64Loader {
         }
         //texture.wrapS=MirroredRepeatWrapping
         //texture.wrapT=MirroredRepeatWrapping
-        console.log("b64 ", B64Loader.b64 , "texture ", src , " is ", texture )
+        let rc="Loaded"
+        if (texture.source.data == null) {
+            rc="Not loaded"
+        }
+        console.log("b64 ", B64Loader.b64 , "texture ", src , " has data ", texture.source )
         return (texture)
         //const material = new THREE.MeshBasicMaterial({ map: texture });
     }

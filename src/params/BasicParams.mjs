@@ -212,13 +212,14 @@ class Udps41 {
 //------------------------------------------------------------- 
 class Test {
     static b64 = false
-    static imgs = ['NousDeux2x.jpg', 'alia002x.jpg']
-    static backgroundImg = 'background.jpg'
-    static snowBallImg = 'maison.jpg'
+    static imgs = [ 'alia/alia99.jpg']
+    //static backgroundImg = 'background.jpg'
+    static backgroundImg = 'backgrounds/filaments.jpg'
+    static snowBallImg = 'isaFamily/maison.jpg'
 
-    static bowlsCount = 15
+    static bowlsCount = 1
     static bowlsPerOrbit = 3
-    static snowGlobeRadius = 25
+    static snowGlobeRadius = 75
     static thingMeshRadius = 20
     static flakesCount = 500
 

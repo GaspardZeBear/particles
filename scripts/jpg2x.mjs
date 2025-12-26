@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import sharp from 'sharp'
+import { rgbShift } from 'three/examples/jsm/tsl/display/RGBShiftNode.js';
 
 const imagesDir = '../textures/';
 
@@ -25,9 +26,10 @@ function readJpgFiles(dir) {
 //----------------------------------------
 function getBackgroundAsString(background) {
   if (typeof background === "string") {
+    console.log("Backroung file ", background)
     //return ('_' + path.basename(background,'.jpg') + '_')
     //return ('_' + path.name(background,'.jpg') + '_')
-    let name = background.split(/[\\/]/).pop().replace(".jpg","");
+    let name = background.split(/[\\/]/).pop().replace(".jpg", "");
     //console.log("y",name)
     return ('_' + name + '_')
   };
@@ -44,7 +46,7 @@ function getFilesPaths(imagesDir, inputFile, background, suffix) {
 }
 
 //----------------------------------------
-function generate2x(imagesDir, inputFile) {
+function generate2xRgb(imagesDir, inputFile) {
   const paths = getFilesPaths(imagesDir, inputFile, background, '2x')
 
   sharp(paths.inputImagePath)
@@ -81,7 +83,9 @@ function generate2x(imagesDir, inputFile) {
 }
 
 //----------------------------------------
-function generate3x(imagesDir, inputFile, background) {
+// Process RGB pattern
+//--------------------------------------------
+function generate3xRgb(imagesDir, inputFile, background) {
   const paths = getFilesPaths(imagesDir, inputFile, background, '3x')
   const imgWidth = 256
   const width = 1024
@@ -119,6 +123,8 @@ function generate3x(imagesDir, inputFile, background) {
 }
 
 //----------------------------------------
+// Merge with background image
+//----------------------------------------
 function generate3xBackground(imagesDir, inputFile, background) {
   const paths = getFilesPaths(imagesDir, inputFile, background, '3x')
   const backgroundImagePath = path.join(imagesDir, background)
@@ -127,10 +133,10 @@ function generate3xBackground(imagesDir, inputFile, background) {
   const width = 1024
   const height = 512
   const borderHeight = 128;
-  const filler = 64; 
+  const filler = 64;
   sharp(backgroundImagePath)
     .resize(width, height, {
-      fit: 'fill' 
+      fit: 'fill'
     })
     .toBuffer()
     .then((resizedBackgroundBuffer) => {
@@ -142,9 +148,9 @@ function generate3xBackground(imagesDir, inputFile, background) {
           // Superposer les trois copies de l'image principale sur l'arrière-plan
           return sharp(resizedBackgroundBuffer)
             .composite([
-              {input: resizedImageBuffer,left: filler / 2,top: borderHeight},
-              {input: resizedImageBuffer,left: imgWidth + 1.5 * filler,top: borderHeight},
-              {input: resizedImageBuffer,left: imgWidth * 2 + 3 * filler,top: borderHeight}
+              { input: resizedImageBuffer, left: filler / 2, top: borderHeight },
+              { input: resizedImageBuffer, left: imgWidth + 1.5 * filler, top: borderHeight },
+              { input: resizedImageBuffer, left: imgWidth * 2 + 3 * filler, top: borderHeight }
             ])
             .toFile(paths.outputImagePath)
             .then(() => {
@@ -163,6 +169,7 @@ async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
     let files = []
     console.log("imagesDir", imagesDir)
     console.log("inputImagePath", inputImageFile)
+    console.log("background", background)
     if (inputImageFile.length > 0) {
       console.log("file ", inputImageFile)
       files.push(inputImageFile);
@@ -178,12 +185,11 @@ async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
     for (const file of files) {
       console.log(file)
       if (background.background.length === 0) {
-        generate2x(imagesDir, file, background.colors);
-        generate3x(imagesDir, file, background.colors);
+        generate2xRgb(imagesDir, file, background.colors);
+        generate3xRgb(imagesDir, file, background.colors);
       } else {
         generate3xBackground(imagesDir, file, background.background);
       }
-
     }
   } catch (err) {
     console.log("Exception ", err)
@@ -191,6 +197,14 @@ async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
 }
 
 //======================================================================
+// Param1 : image file
+// Param2 : merge : 
+//   If param 2 contains commas, it is Red Green Blue pattern
+//   -> generate 2x and 3x file
+//   Else, it's a background image file
+//   -> generate 3x file
+//--------------------------------------------------------------------
+
 let inputImageFile = ''
 let rgb = '255,0,0'
 let backgroundImg = ''
@@ -202,22 +216,27 @@ if (process.argv.length > 3) {
   rgb = process.argv[3];
 }
 
-// Vérifier si le fichier image existe
+// check if image file exists
 if (inputImageFile.length > 0 && !fs.existsSync(path.join(imagesDir, `${inputImageFile}`))) {
   console.error(`Le fichier ${inputImageFile} n'existe pas.`);
   process.exit(1);
 }
 
-// Lire les informations du fichier d'entrée
-//const inputImageDir = path.dirname(inputImagePath);
-//const inputImageName = path.basename(inputImagePath, '.jpg');
-
 let colors = rgb.split(',').map(Number)
+
+// check if backgroud image exists
 if (!rgb.includes(',')) {
   backgroundImg = rgb
+  let pieces=rgb.split(/[\\/]/)
+  console.log("pieces",pieces)
+  let file=path.join(...pieces)
+  console.log("file",file)
+  //if (rgb.length > 0 && !fs.existsSync(`${file}`)) {
+  if (rgb.length > 0 && !fs.existsSync(path.join(imagesDir, file))) {
+    console.error(`Le fichier ${file} n'existe pas.`);
+    process.exit(1);
+  }
 }
 
-// Exécuter le script
 let background = { background: backgroundImg, colors: { r: colors[0], g: colors[1], b: colors[2] } }
 convertImagesToNx(imagesDir, inputImageFile, background);
-//convertImagesTo3x(imagesDir, inputImageFile);

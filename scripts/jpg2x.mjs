@@ -25,7 +25,11 @@ function readJpgFiles(dir) {
 //----------------------------------------
 function getBackgroundAsString(background) {
   if (typeof background === "string") {
-    return ('_' + path.basename(background,'.jpg') + '_')
+    //return ('_' + path.basename(background,'.jpg') + '_')
+    //return ('_' + path.name(background,'.jpg') + '_')
+    let name = background.split(/[\\/]/).pop().replace(".jpg","");
+    //console.log("y",name)
+    return ('_' + name + '_')
   };
   return (`_${background.r}_${background.g}_${background.b}_`)
 }

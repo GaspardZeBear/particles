@@ -29,7 +29,7 @@ function fileToBase64(filePath) {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, (err, data) => {
       if (err) {
-        console.log("err fileToBase64")
+        console.log("Error fileToBase64 ",err)
         //reject(err);
         //return;
         resolve('')
@@ -49,9 +49,9 @@ export async function convertImagesToBase64JSON(profile) {
     console.log("profile", profile)
     if (profile.length > 0) {
       BasicParams.setProfile(profile)
-      files = BasicParams.getProfile().constructor.imgs;
-      files.push(BasicParams.getProfile().constructor.snowBallImg);
-      files.push(BasicParams.getProfile().constructor.backgroundImg);
+      files = BasicParams.getProfile().imgs;
+      files.push(BasicParams.getProfile().snowBallImg);
+      files.push(BasicParams.getProfile().backgroundImg);
     } else {
       files = await readJpgFiles(imagesDir);
     }

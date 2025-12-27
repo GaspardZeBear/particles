@@ -17,14 +17,12 @@ import { createPlaneBackground } from "./components/background.js";
 import { B64Loader } from './classes/B64Loader.js';
 
 //-----------Parm section ------------------------------------------
-// Here declare only one import as P !!!
-// quick an dirty way to get different profiles with name P 
 import { BasicParams } from './params/BasicParams.mjs';
-//import { Alia as P} from './params/BasicParams.js';
-//import { IsaFamily as P} from './params/BasicParams.js';
+//import { BasicParams } from '../tries/BasicParams.mjs';
+
 //--------------------------------------------------------------
 
-console.log("Entering basic.js")
+console.log("Entering  basic.js " + BasicParams)
 
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
@@ -32,7 +30,8 @@ BasicParams.setProfile(profile)
 if ( params.get("profile") ) {
   BasicParams.setProfile(params.get("profile"))
 }
-let P=BasicParams.getProfile().constructor
+//let P=BasicParams.getProfile().constructor
+let P=BasicParams.getProfile()
 B64Loader.b64=b64
 if ( params.get("b64") ) {
   B64Loader.b64=params.get("b64")

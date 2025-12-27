@@ -6,7 +6,8 @@ function createBowls({ bowlsCount = 10, w = 400, h = 400, imgs = [], thingMeshRa
   let meshes = []
   let radius = snowGlobeRadius
   let angle = 0
-  const cameraZ=BasicParams.getProfile().constructor.cameraZ
+  console.log(BasicParams.getProfile())
+  const cameraZ=BasicParams.getProfile().cameraZ
   for (let i = 1; i < bowlsCount+1; i++) {
     radius += thingMeshRadius
     console.log(radius, )

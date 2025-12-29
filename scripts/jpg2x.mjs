@@ -146,12 +146,78 @@ function generate3xBackground(imagesDir, inputFile, background) {
         .toBuffer()
         .then((resizedImageBuffer) => {
           // Superposer les trois copies de l'image principale sur l'arrière-plan
-          return sharp(resizedBackgroundBuffer)
+         return sharp(resizedBackgroundBuffer)
             .composite([
               { input: resizedImageBuffer, left: filler / 2, top: borderHeight },
               { input: resizedImageBuffer, left: imgWidth + 1.5 * filler, top: borderHeight },
               { input: resizedImageBuffer, left: imgWidth * 2 + 3 * filler, top: borderHeight }
             ])
+            .toFile(paths.outputImagePath)
+            .then(() => {
+              console.log(`Image ${paths.outputImagePath} generated.`);
+            });
+        });
+    })
+    .catch((err) => {
+      console.error('Error: ', err);
+    })
+}
+
+//----------------------------------------
+// Merge with background image
+//----------------------------------------
+async function generateNxBackground(imagesDir, inputFile, background,count) {
+  const paths = getFilesPaths(imagesDir, inputFile, background, count+'x')
+  const backgroundImagePath = path.join(imagesDir, background)
+
+  const width = 1024
+  const imgWidth = Math.round(width/(count+1))
+  const height = 512
+  //const borderHeight = Math.round(height/(count+1))
+  
+  const filler = Math.round(imgWidth/count);
+  let meta
+  await sharp(paths.inputImagePath)
+    .metadata()
+    .then( (metadata) => {meta=metadata})
+
+  console.log(meta)
+  const ratio=meta.width/meta.height
+  if (ratio > 1.5 || ratio < 0.5 ) 
+    console.log(`bad image with/height ratio ${ratio}, unpredictable results `)
+
+  const imgHeight = Math.round(ratio*imgWidth)
+
+  let lines =1
+  if ( imgHeight < height/2 ) {
+    lines =2
+  }
+  
+  const borderHeight = Math.round((height-imgHeight)/2)
+  //const borderHeight = 256
+
+  console.log("imgHeight ", imgHeight, " borderHeight ", borderHeight)
+  let composites=[]
+  sharp(backgroundImagePath)
+    .resize(width, height, {
+      fit: 'fill'
+    })
+    .toBuffer()
+    .then((resizedBackgroundBuffer) => {
+      // Redimensionner l'image principale à 256 pixels de largeur
+      return sharp(paths.inputImagePath)
+        .resize(imgWidth,imgHeight)
+        .toBuffer()
+        .then((resizedImageBuffer) => {
+          let leftPos=Math.round(filler/2)
+          for (let i=0;i<count;i++) {
+            composites.push({ input: resizedImageBuffer, left: leftPos, top: borderHeight },)
+            console.log("leftPos ", leftPos)
+            leftPos += imgWidth + filler
+          }
+          //console.log(composites)
+          return sharp(resizedBackgroundBuffer)
+            .composite(composites)
             .toFile(paths.outputImagePath)
             .then(() => {
               console.log(`Image ${paths.outputImagePath} generated.`);
@@ -189,6 +255,10 @@ async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
         generate3xRgb(imagesDir, file, background.colors);
       } else {
         generate3xBackground(imagesDir, file, background.background);
+        generateNxBackground(imagesDir, file, background.background,2);
+        generateNxBackground(imagesDir, file, background.background,3);
+        generateNxBackground(imagesDir, file, background.background,5);
+        generateNxBackground(imagesDir, file, background.background,10);
       }
     }
   } catch (err) {

@@ -38,137 +38,50 @@ function getBackgroundAsString(background) {
 
 //----------------------------------------
 function getFilesPaths(imagesDir, inputFile, background, suffix) {
+  console.log("getFilesPaths() background"  , background, " suffix ",suffix)
   const inputImagePath = path.join(imagesDir, inputFile)
-  console.log(inputImagePath)
+  console.log("getFilesPaths() inputImagePath" , inputImagePath)
   const outputImagePath = path.join(imagesDir, inputFile.replace('.jpg', getBackgroundAsString(background) + suffix + '.jpg'))
-  console.log(outputImagePath)
+  console.log("getFilesPaths() ouputImagePath",outputImagePath)
   return ({ inputImagePath: inputImagePath, outputImagePath: outputImagePath })
-}
-
-//----------------------------------------
-function generate2xRgb(imagesDir, inputFile) {
-  const paths = getFilesPaths(imagesDir, inputFile, background, '2x')
-
-  sharp(paths.inputImagePath)
-    .metadata()
-    .then(metadata => {
-      const { width, height } = metadata;
-      const borderHeight = Math.floor(height / 6); // 1/6 de la hauteur pour les bandes noires
-      const newHeight = height + 2 * borderHeight; // Nouvelle hauteur avec les bandes noires
-
-      // Créer une nouvelle image avec deux fois la largeur et les bandes noires
-      return sharp({
-        create: {
-          width: width * 2,
-          height: newHeight,
-          channels: 4,
-          background: { r: background.r, g: background.g, b: background.b, alpha: 1 } // Fond noir
-        }
-      })
-        .composite([
-          { input: paths.inputImagePath, left: 0, top: borderHeight }, // Première copie de l'image
-          { input: paths.inputImagePath, left: width, top: borderHeight } // Deuxième copie de l'image
-        ])
-        .toFile(paths.outputImagePath)
-        .then(() => {
-          console.log(`L'image ${paths.outputImagePath} a été générée avec succès.`);
-        })
-        .catch(err => {
-          console.error('Erreur lors de la génération de l\'image:', err);
-        });
-    })
-    .catch(err => {
-      console.error('Erreur lors de la lecture des métadonnées de l\'image:', err);
-    });
 }
 
 //----------------------------------------
 // Process RGB pattern
 //--------------------------------------------
-function generate3xRgb(imagesDir, inputFile, background) {
-  const paths = getFilesPaths(imagesDir, inputFile, background, '3x')
-  const imgWidth = 256
+async function generateBackgroundRgb(imagesDir, background) {
+  const paths = getFilesPaths(imagesDir, '$background.jpg', background, 'x')
+  console.log("generateBackgroundRgb() generate fake background path ",paths)
   const width = 1024
   const height = 512
-  const borderHeight = 128;
-  const filler = 64; // Nouvelle hauteur avec les bandes noires
-  sharp(paths.inputImagePath)
-    .resize(imgWidth)
-    .toBuffer()
-    .then((resizedImageBuffer) => {
-      return sharp({
-        create: {
-          width: width,
-          height: height,
-          channels: 4,
-          background: { r: background.r, g: background.g, b: background.b, alpha: 1 } // Fond noir
-        }
-      })
-        .composite([
-          { input: resizedImageBuffer, left: filler / 2, top: borderHeight }, // Première copie de l'image
-          { input: resizedImageBuffer, left: imgWidth + 1.5 * filler, top: borderHeight },
-          { input: resizedImageBuffer, left: imgWidth * 2 + 3 * filler, top: borderHeight } // Deuxième copie de l'image
-        ])
-        .toFile(paths.outputImagePath)
-        .then(() => {
-          console.log(`Image ${paths.outputImagePath} generated.`);
-        })
-        .catch((err) => {
-          console.error('Error generating ${outputImagePath} ', err);
-        });
+  let created= await sharp({
+    create: {
+      width: width,
+      height: height,
+      channels: 4,
+      background: { r: background.r, g: background.g, b: background.b, alpha: 1 } // Fond noir
+    }
+  })
+    .toFile(paths.outputImagePath)
+    .then(() => {
+      console.log(`generateBackgroundRgb() Image ${paths.outputImagePath} generated.`);
+      console.log("generateBackgroundRgb() return in then ",paths.outputImagePath);
+      //return(paths.outputImagePath)
     })
     .catch((err) => {
-      console.error('Error resizing ${inputImagePath}', err);
+      console.error(`generateBackgroundRgb()  Error generating ${paths.outputImagePath} `, err);
     });
+  console.log("generateBackgroundRgb() return",paths.outputImagePath);
+  return(paths.outputImagePath)
 }
 
 //----------------------------------------
 // Merge with background image
 //----------------------------------------
-function generate3xBackground(imagesDir, inputFile, background) {
-  const paths = getFilesPaths(imagesDir, inputFile, background, '3x')
-  const backgroundImagePath = path.join(imagesDir, background)
-
-  const imgWidth = 256
-  const width = 1024
-  const height = 512
-  const borderHeight = 128;
-  const filler = 64;
-  sharp(backgroundImagePath)
-    .resize(width, height, {
-      fit: 'fill'
-    })
-    .toBuffer()
-    .then((resizedBackgroundBuffer) => {
-      // Redimensionner l'image principale à 256 pixels de largeur
-      return sharp(paths.inputImagePath)
-        .resize(imgWidth)
-        .toBuffer()
-        .then((resizedImageBuffer) => {
-          // Superposer les trois copies de l'image principale sur l'arrière-plan
-          return sharp(resizedBackgroundBuffer)
-            .composite([
-              { input: resizedImageBuffer, left: filler / 2, top: borderHeight },
-              { input: resizedImageBuffer, left: imgWidth + 1.5 * filler, top: borderHeight },
-              { input: resizedImageBuffer, left: imgWidth * 2 + 3 * filler, top: borderHeight }
-            ])
-            .toFile(paths.outputImagePath)
-            .then(() => {
-              console.log(`Image ${paths.outputImagePath} generated.`);
-            });
-        });
-    })
-    .catch((err) => {
-      console.error('Error: ', err);
-    })
-}
-
-//----------------------------------------
-// Merge with background image
-//----------------------------------------
-async function generateNxBackground(imagesDir, inputFile, background, lines, cols) {
-  const paths = getFilesPaths(imagesDir, inputFile, background, lines + '_' + cols + 'x')
-  const backgroundImagePath = path.join(imagesDir, background)
+async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, cols) {
+  console.log("generateNxBackground() enter  backgroundImg ", backgroundImg)
+  const paths = getFilesPaths(imagesDir, inputFile, backgroundImg, lines + '_' + cols + 'x')
+  const backgroundImagePath = path.join(imagesDir, backgroundImg)
 
   const width = 1024
   const imgWidth = Math.round(width / (cols + 1))
@@ -181,23 +94,23 @@ async function generateNxBackground(imagesDir, inputFile, background, lines, col
     .metadata()
     .then((metadata) => { meta = metadata })
 
-  console.log(meta)
+  //console.log(meta)
   const ratio = meta.width / meta.height
   if (ratio > 1.5 || ratio < 0.5)
-    console.log(`bad image with/height ratio ${ratio}, unpredictable results `)
+    console.log(`generateNxBackground() bad image with/height ratio ${ratio}, unpredictable results `)
 
   const imgHeight = Math.round(ratio * imgWidth)
 
   //const borderHeight = Math.round((height-imgHeight)/2)
   //const borderHeight = 256
   const hfiller = Math.round((height - (lines * imgHeight)) / lines)
-  console.log(" lines ", lines , " cols ", cols)
-  console.log("imgWidth ", imgWidth,"imgHeight ", imgHeight)
-  console.log(" vfiller ", vfiller , " hfiller ", hfiller)
+  //console.log(" lines ", lines, " cols ", cols)
+  //console.log("imgWidth ", imgWidth, "imgHeight ", imgHeight)
+  //console.log(" vfiller ", vfiller, " hfiller ", hfiller)
 
   let composites = []
   sharp(backgroundImagePath)
-    //Resize bacground image
+    //Resize background image
     .resize(width, height, {
       fit: 'fill'
     })
@@ -208,12 +121,11 @@ async function generateNxBackground(imagesDir, inputFile, background, lines, col
         .resize(imgWidth, imgHeight)
         .toBuffer()
         .then((resizedImageBuffer) => {
-          let topPos=Math.round(hfiller/2)
+          let topPos = Math.round(hfiller / 2)
           for (let l = 0; l < lines; l++) {
             let leftPos = Math.round(vfiller / 2)
             for (let c = 0; c < cols; c++) {
               composites.push({ input: resizedImageBuffer, left: leftPos, top: topPos },)
-              console.log("l ",l,"topPos ", topPos,"c ",c,"leftPos ", leftPos)
               leftPos += imgWidth + vfiller
             }
             topPos += imgHeight + hfiller
@@ -223,12 +135,12 @@ async function generateNxBackground(imagesDir, inputFile, background, lines, col
             .composite(composites)
             .toFile(paths.outputImagePath)
             .then(() => {
-              console.log(`Image ${paths.outputImagePath} generated.`);
+              console.log(`generateNxBackground() Image ${paths.outputImagePath} generated.`);
             });
         });
     })
     .catch((err) => {
-      console.error('Error: ', err);
+      console.error('generateNxBackground() Error: ', err);
     })
 }
 
@@ -236,36 +148,33 @@ async function generateNxBackground(imagesDir, inputFile, background, lines, col
 async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
   try {
     let files = []
-    console.log("imagesDir", imagesDir)
-    console.log("inputImagePath", inputImageFile)
-    console.log("background", background)
+    console.log("convertImagesToNx() imagesDir", imagesDir, 
+      "inputImagePath", inputImageFile,
+       "background", background)
     if (inputImageFile.length > 0) {
-      console.log("file ", inputImageFile)
+      console.log("convertImagesToNx() file ", inputImageFile)
       files.push(inputImageFile);
     } else {
       files = await readJpgFiles(imagesDir).filter(file => !file.endsWith('2x.jpg'));
     }
-    console.log("files", files)
+    console.log("convertImagesToNx() files", files)
     if (files.length === 0) {
-      console.log('No .jpg file found.');
+      console.log('convertImagesToNx() No .jpg file found.');
       return;
     }
 
     for (const file of files) {
       console.log(file)
-      if (background.background.length === 0) {
-        generate2xRgb(imagesDir, file, background.colors);
-        generate3xRgb(imagesDir, file, background.colors);
-      } else {
-        generate3xBackground(imagesDir, file, background.background);
-        //generateNxBackground(imagesDir, file, background.background, 1, 2);
-        //generateNxBackground(imagesDir, file, background.background, 2, 3);
-        //generateNxBackground(imagesDir, file, background.background, 2, 5);
-        generateNxBackground(imagesDir, file, background.background, background.format.l, background.format.c);
+      let backgroundImg= background.backgroundImg
+      if (background.backgroundImg.length === 0) {
+        console.log("convertImagesToNx() background colors ",background.colors);
+        backgroundImg=await generateBackgroundRgb(imagesDir, background.colors)
+      } 
+      console.log("convertImagesToNx() backgroundImg", backgroundImg)
+      generateNxBackground(imagesDir, file, backgroundImg, background.format.l, background.format.c);
       }
-    }
   } catch (err) {
-    console.log("Exception ", err)
+    console.log("convertImagesToNx() Exception ", err)
   }
 }
 
@@ -302,7 +211,7 @@ if (inputImageFile.length > 0 && !fs.existsSync(path.join(imagesDir, `${inputIma
 
 let colors = rgb.split(',').map(Number)
 let fmts = linesCols.split(',').map(Number)
-let format={l:fmts[0],c:fmts[1]}
+let format = { l: fmts[0], c: fmts[1] }
 
 // check if backgroud image exists
 if (!rgb.includes(',')) {
@@ -318,5 +227,5 @@ if (!rgb.includes(',')) {
   }
 }
 
-let background = { format:format,background: backgroundImg, colors: { r: colors[0], g: colors[1], b: colors[2] } }
+let background = { format: format, backgroundImg: backgroundImg, colors: { r: colors[0], g: colors[1], b: colors[2] } }
 convertImagesToNx(imagesDir, inputImageFile, background);

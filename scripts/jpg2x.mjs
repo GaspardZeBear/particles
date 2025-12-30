@@ -146,7 +146,7 @@ function generate3xBackground(imagesDir, inputFile, background) {
         .toBuffer()
         .then((resizedImageBuffer) => {
           // Superposer les trois copies de l'image principale sur l'arrière-plan
-         return sharp(resizedBackgroundBuffer)
+          return sharp(resizedBackgroundBuffer)
             .composite([
               { input: resizedImageBuffer, left: filler / 2, top: borderHeight },
               { input: resizedImageBuffer, left: imgWidth + 1.5 * filler, top: borderHeight },
@@ -166,54 +166,57 @@ function generate3xBackground(imagesDir, inputFile, background) {
 //----------------------------------------
 // Merge with background image
 //----------------------------------------
-async function generateNxBackground(imagesDir, inputFile, background,count) {
-  const paths = getFilesPaths(imagesDir, inputFile, background, count+'x')
+async function generateNxBackground(imagesDir, inputFile, background, lines, cols) {
+  const paths = getFilesPaths(imagesDir, inputFile, background, lines + '_' + cols + 'x')
   const backgroundImagePath = path.join(imagesDir, background)
 
   const width = 1024
-  const imgWidth = Math.round(width/(count+1))
+  const imgWidth = Math.round(width / (cols + 1))
   const height = 512
   //const borderHeight = Math.round(height/(count+1))
-  
-  const filler = Math.round(imgWidth/count);
-  let meta
+
+  const vfiller = Math.round(imgWidth / cols);
+  let meta = {}
   await sharp(paths.inputImagePath)
     .metadata()
-    .then( (metadata) => {meta=metadata})
+    .then((metadata) => { meta = metadata })
 
   console.log(meta)
-  const ratio=meta.width/meta.height
-  if (ratio > 1.5 || ratio < 0.5 ) 
+  const ratio = meta.width / meta.height
+  if (ratio > 1.5 || ratio < 0.5)
     console.log(`bad image with/height ratio ${ratio}, unpredictable results `)
 
-  const imgHeight = Math.round(ratio*imgWidth)
+  const imgHeight = Math.round(ratio * imgWidth)
 
-  let lines =1
-  if ( imgHeight < height/2 ) {
-    lines =2
-  }
-  
-  const borderHeight = Math.round((height-imgHeight)/2)
+  //const borderHeight = Math.round((height-imgHeight)/2)
   //const borderHeight = 256
+  const hfiller = Math.round((height - (lines * imgHeight)) / lines)
+  console.log(" lines ", lines , " cols ", cols)
+  console.log("imgWidth ", imgWidth,"imgHeight ", imgHeight)
+  console.log(" vfiller ", vfiller , " hfiller ", hfiller)
 
-  console.log("imgHeight ", imgHeight, " borderHeight ", borderHeight)
-  let composites=[]
+  let composites = []
   sharp(backgroundImagePath)
+    //Resize bacground image
     .resize(width, height, {
       fit: 'fill'
     })
     .toBuffer()
     .then((resizedBackgroundBuffer) => {
-      // Redimensionner l'image principale à 256 pixels de largeur
+      // Resize image
       return sharp(paths.inputImagePath)
-        .resize(imgWidth,imgHeight)
+        .resize(imgWidth, imgHeight)
         .toBuffer()
         .then((resizedImageBuffer) => {
-          let leftPos=Math.round(filler/2)
-          for (let i=0;i<count;i++) {
-            composites.push({ input: resizedImageBuffer, left: leftPos, top: borderHeight },)
-            console.log("leftPos ", leftPos)
-            leftPos += imgWidth + filler
+          let topPos=Math.round(hfiller/2)
+          for (let l = 0; l < lines; l++) {
+            let leftPos = Math.round(vfiller / 2)
+            for (let c = 0; c < cols; c++) {
+              composites.push({ input: resizedImageBuffer, left: leftPos, top: topPos },)
+              console.log("l ",l,"topPos ", topPos,"c ",c,"leftPos ", leftPos)
+              leftPos += imgWidth + vfiller
+            }
+            topPos += imgHeight + hfiller
           }
           //console.log(composites)
           return sharp(resizedBackgroundBuffer)
@@ -255,10 +258,10 @@ async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
         generate3xRgb(imagesDir, file, background.colors);
       } else {
         generate3xBackground(imagesDir, file, background.background);
-        generateNxBackground(imagesDir, file, background.background,2);
-        generateNxBackground(imagesDir, file, background.background,3);
-        generateNxBackground(imagesDir, file, background.background,5);
-        generateNxBackground(imagesDir, file, background.background,10);
+        //generateNxBackground(imagesDir, file, background.background, 1, 2);
+        //generateNxBackground(imagesDir, file, background.background, 2, 3);
+        //generateNxBackground(imagesDir, file, background.background, 2, 5);
+        generateNxBackground(imagesDir, file, background.background, background.format.l, background.format.c);
       }
     }
   } catch (err) {
@@ -273,10 +276,12 @@ async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
 //   -> generate 2x and 3x file
 //   Else, it's a background image file
 //   -> generate 3x file
+// Param3 : format lines,cols 
 //--------------------------------------------------------------------
 
 let inputImageFile = ''
 let rgb = '255,0,0'
+let linesCols = '1,3'
 let backgroundImg = ''
 // Vérifier les arguments de la ligne de commande
 if (process.argv.length > 2) {
@@ -284,6 +289,9 @@ if (process.argv.length > 2) {
 }
 if (process.argv.length > 3) {
   rgb = process.argv[3];
+}
+if (process.argv.length > 4) {
+  linesCols = process.argv[4];
 }
 
 // check if image file exists
@@ -293,14 +301,16 @@ if (inputImageFile.length > 0 && !fs.existsSync(path.join(imagesDir, `${inputIma
 }
 
 let colors = rgb.split(',').map(Number)
+let fmts = linesCols.split(',').map(Number)
+let format={l:fmts[0],c:fmts[1]}
 
 // check if backgroud image exists
 if (!rgb.includes(',')) {
   backgroundImg = rgb
-  let pieces=rgb.split(/[\\/]/)
-  console.log("pieces",pieces)
-  let file=path.join(...pieces)
-  console.log("file",file)
+  let pieces = rgb.split(/[\\/]/)
+  console.log("pieces", pieces)
+  let file = path.join(...pieces)
+  console.log("file", file)
   //if (rgb.length > 0 && !fs.existsSync(`${file}`)) {
   if (rgb.length > 0 && !fs.existsSync(path.join(imagesDir, file))) {
     console.error(`Le fichier ${file} n'existe pas.`);
@@ -308,5 +318,5 @@ if (!rgb.includes(',')) {
   }
 }
 
-let background = { background: backgroundImg, colors: { r: colors[0], g: colors[1], b: colors[2] } }
+let background = { format:format,background: backgroundImg, colors: { r: colors[0], g: colors[1], b: colors[2] } }
 convertImagesToNx(imagesDir, inputImageFile, background);

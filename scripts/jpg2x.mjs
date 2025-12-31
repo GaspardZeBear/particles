@@ -119,6 +119,7 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
       // Resize image
       return sharp(paths.inputImagePath)
         .resize(imgWidth, imgHeight)
+        //.sharpen()
         .toBuffer()
         .then((resizedImageBuffer) => {
           let topPos = Math.round(hfiller / 2)

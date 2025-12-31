@@ -157,7 +157,7 @@ class SnowBallMesh extends Mesh {
     //this.rotateZ(Math.PI / 6000)
 
     // Faire tourner la boule à neige lentement
-    this.snowGlobeIn.rotation.y += 0.001;
+    this.snowGlobeIn.rotation.y += 0.005;
 
     // Animer les flocons de neige
     const positions = this.flakes.geometry.attributes.position.array;

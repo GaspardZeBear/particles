@@ -28,4 +28,4 @@ finalHtml += "</script></body></html>"
 // Écrire le fichier final
 fs.writeFileSync(path.join(__dirname, '', '..\\dist\\target.html'), finalHtml, 'utf8');
 
-console.log('Fichier HTML autonome créé dans dist/target.html');
+console.log('StandAlone html file created  dist/target.html');

@@ -1,5 +1,6 @@
 console.log(`
 0. (if images do not exist) Prepare images in texture
+  hint : node GenImgsWithBackground.mjs <imagesDir> <backgroundsdir>
 1. (if profile does not ) Create profile in BasicParams.js (create profile class and setup getProfile())
 2. Generate b64 images in textures/textures_b64.js : 
   - node jpg2b64.mjs <profile>

@@ -50,7 +50,7 @@ function getFilesPaths(imagesDir, inputFile, background, suffix) {
 // Process RGB pattern
 //--------------------------------------------
 async function generateBackgroundRgb(imagesDir, background) {
-  const paths = getFilesPaths(imagesDir, '$background.jpg', background, 'x')
+  const paths = getFilesPaths(imagesDir, '$.jpg', background, 'x')
   console.log("generateBackgroundRgb() generate fake background path ",paths)
   const width = 1024
   const height = 512
@@ -86,6 +86,8 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
   const width = 1024
   const imgWidth = Math.round(width / (cols + 1))
   const height = 512
+  const hOffset=Math.round(height/6)
+  
   //const borderHeight = Math.round(height/(count+1))
 
   const vfiller = Math.round(imgWidth / cols);
@@ -99,11 +101,12 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
   if (ratio > 1.5 || ratio < 0.5)
     console.log(`generateNxBackground() bad image with/height ratio ${ratio}, unpredictable results `)
 
-  const imgHeight = Math.round(ratio * imgWidth)
+  const imgHeight = Math.round(ratio * (imgWidth-50))
 
   //const borderHeight = Math.round((height-imgHeight)/2)
   //const borderHeight = 256
-  const hfiller = Math.round((height - (lines * imgHeight)) / lines)
+  
+  const hfiller = Math.round( (height -2*hOffset - (lines * imgHeight)) / lines)
   //console.log(" lines ", lines, " cols ", cols)
   //console.log("imgWidth ", imgWidth, "imgHeight ", imgHeight)
   //console.log(" vfiller ", vfiller, " hfiller ", hfiller)
@@ -118,11 +121,16 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
     .then((resizedBackgroundBuffer) => {
       // Resize image
       return sharp(paths.inputImagePath)
-        .resize(imgWidth, imgHeight)
-        //.sharpen()
+        .resize(imgWidth, imgHeight, {
+      fit: 'fill'
+        })
+        .sharpen()
+        .sharpen()
+        .sharpen()
         .toBuffer()
         .then((resizedImageBuffer) => {
-          let topPos = Math.round(hfiller / 2)
+          //let topPos = Math.round(hfiller / 2)
+          let topPos=hOffset
           for (let l = 0; l < lines; l++) {
             let leftPos = Math.round(vfiller / 2)
             for (let c = 0; c < cols; c++) {

@@ -21,9 +21,11 @@ function createBowls({ bowlsCount = 10, w = 400, h = 400, imgs = [], thingMeshRa
     let bowlSpeed = Math.random() * 0.03 + 0.001
     for (let b = 0; b < bowlsPerOrbit; b++) {
       let idx = Math.floor(Math.random() * imgs.length)
-      console.log("ceateBowls() creating bowl ", i+b , " img ", imgs[idx])
+      
       let mesh = new ThingMesh(imgs[idx], thingMeshRadius)
-      mesh.initPosition(radius, angle + b * 2 * Math.PI / bowlsPerOrbit, bowlSpeed)
+      let nAngle= angle + b * 2 * Math.PI / bowlsPerOrbit
+      console.log("ceateBowls() creating bowl ", i+b , " nAngle ", nAngle," img ", imgs[idx])
+      mesh.initPosition(radius, nAngle , bowlSpeed)
       meshes.push(mesh)
     }
   }

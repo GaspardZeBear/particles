@@ -76,9 +76,108 @@ async function generateBackgroundRgb(imagesDir, background) {
 }
 
 //----------------------------------------
+async function getCoefs(width, height, lines, cols, imgWidth, imgHeight) {
+  let c={
+    vOffset : 0,
+    hOffset:-1,
+    vFiller : -1,
+    hFiller:-1,
+    imgWidth: -1,
+    imgHeight: -1,
+    vSum:-1,
+    hSum:-1
+  }
+  //c.hOffset=height/(6*lines)
+  c.hOffset=height/(4*lines)
+  c.imgHeight = ( height-((lines+1)*c.hOffset))/lines
+  let ratio=imgHeight/imgWidth
+  c.imgWidth = c.imgHeight*ratio
+  //c.hFiller = Math.round( (height -2*c.hOffset - lines*imgHeight)) 
+  c.hFiller = 0
+  if (lines > 1 )  {
+    c.hFiller = Math.round( (2*c.hOffset/(lines))) 
+  }
+  c.vFiller=(width - c.imgWidth*cols)/cols
+  console.log("width ", width, "height ", height, "lines ", lines, "cols ", cols, "imgWidth ", imgWidth, "imgHeight ", imgHeight)
+  c.hSum=2*c.hOffset + lines*c.imgHeight + (lines-1)*c.hFiller
+  c.vSum=cols*(c.imgWidth + c.vFiller)
+
+  for (let a in c) {
+    //console.log(" attrib ",a, " ", c[a] )
+    c[a]=Math.round(c[a])
+  }
+  console.log(c)
+  return(c)
+  //console.log(c)
+}
+
+//----------------------------------------
 // Merge with background image
 //----------------------------------------
 async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, cols) {
+  console.log("generateNxBackground() enter  backgroundImg ", backgroundImg)
+  const paths = getFilesPaths(imagesDir, inputFile, backgroundImg, lines + '_' + cols + 'x')
+  const backgroundImagePath = path.join(imagesDir, backgroundImg)
+
+  const width = 1024
+  const height=512
+  let meta = {}
+  await sharp(paths.inputImagePath)
+    .metadata()
+    .then((metadata) => { meta = metadata })
+
+  //console.log(meta)
+  //const ratio = meta.width / meta.height
+  const coefs= await getCoefs(width,height,lines,cols,meta.width,meta.height)
+  console.log("coefs ",coefs)
+
+  let composites = []
+  sharp(backgroundImagePath)
+    //Resize background image
+    .resize(width, height, {
+      fit: 'fill'
+    })
+    .toBuffer()
+    .then((resizedBackgroundBuffer) => {
+      // Resize image
+      return sharp(paths.inputImagePath)
+        .resize(coefs.imgWidth, coefs.imgHeight, {
+      fit: 'fill'
+        })
+        .sharpen()
+        .sharpen()
+        .sharpen()
+        .toBuffer()
+        .then((resizedImageBuffer) => {
+          //let topPos = Math.round(hfiller / 2)
+          let topPos=coefs.hOffset
+          for (let l = 0; l < lines; l++) {
+            //let leftPos = Math.round(coefs.vFiller / 2)
+            let leftPos = 0
+            for (let c = 0; c < cols; c++) {
+              composites.push({ input: resizedImageBuffer, left: leftPos, top: topPos },)
+              leftPos += coefs.imgWidth + coefs.vFiller
+            }
+            topPos += coefs.imgHeight + coefs.hFiller
+          }
+          //console.log(composites)
+          return sharp(resizedBackgroundBuffer)
+            .composite(composites)
+            .toFile(paths.outputImagePath)
+            .then(() => {
+              console.log(`generateNxBackground() Image ${paths.outputImagePath} generated.`);
+            });
+        });
+    })
+    .catch((err) => {
+      console.error('generateNxBackground() Error: ', err);
+    })
+}
+
+//----------------------------------------
+// Merge with background image
+//----------------------------------------
+async function OKgenerateNxBackground(imagesDir, inputFile, backgroundImg, lines, cols) {
   console.log("generateNxBackground() enter  backgroundImg ", backgroundImg)
   const paths = getFilesPaths(imagesDir, inputFile, backgroundImg, lines + '_' + cols + 'x')
   const backgroundImagePath = path.join(imagesDir, backgroundImg)
@@ -152,6 +251,7 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
       console.error('generateNxBackground() Error: ', err);
     })
 }
+
 
 //---------------------------------------- Fonction principale
 async function convertImagesToNx(inputImagesDir, inputImageFile, background) {

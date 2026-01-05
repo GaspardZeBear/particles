@@ -38,11 +38,11 @@ function getBackgroundAsString(background) {
 
 //----------------------------------------
 function getFilesPaths(imagesDir, inputFile, background, suffix) {
-  console.log("getFilesPaths() background"  , background, " suffix ",suffix)
+  console.log("getFilesPaths() background", background, " suffix ", suffix)
   const inputImagePath = path.join(imagesDir, inputFile)
-  console.log("getFilesPaths() inputImagePath" , inputImagePath)
+  console.log("getFilesPaths() inputImagePath", inputImagePath)
   const outputImagePath = path.join(imagesDir, inputFile.replace('.jpg', getBackgroundAsString(background) + suffix + '.jpg'))
-  console.log("getFilesPaths() ouputImagePath",outputImagePath)
+  console.log("getFilesPaths() ouputImagePath", outputImagePath)
   return ({ inputImagePath: inputImagePath, outputImagePath: outputImagePath })
 }
 
@@ -51,10 +51,10 @@ function getFilesPaths(imagesDir, inputFile, background, suffix) {
 //--------------------------------------------
 async function generateBackgroundRgb(imagesDir, background) {
   const paths = getFilesPaths(imagesDir, '$.jpg', background, 'x')
-  console.log("generateBackgroundRgb() generate fake background path ",paths)
+  console.log("generateBackgroundRgb() generate fake background path ", paths)
   const width = 1024
   const height = 512
-  let created= await sharp({
+  let created = await sharp({
     create: {
       width: width,
       height: height,
@@ -65,62 +65,61 @@ async function generateBackgroundRgb(imagesDir, background) {
     .toFile(paths.outputImagePath)
     .then(() => {
       console.log(`generateBackgroundRgb() Image ${paths.outputImagePath} generated.`);
-      console.log("generateBackgroundRgb() return in then ",paths.outputImagePath);
+      console.log("generateBackgroundRgb() return in then ", paths.outputImagePath);
       //return(paths.outputImagePath)
     })
     .catch((err) => {
       console.error(`generateBackgroundRgb()  Error generating ${paths.outputImagePath} `, err);
     });
-  console.log("generateBackgroundRgb() return",paths.outputImagePath);
-  return(paths.outputImagePath)
+  console.log("generateBackgroundRgb() return", paths.outputImagePath);
+  return (paths.outputImagePath)
 }
 
 //----------------------------------------
 async function getCoefs(width, height, lines, cols, imgWidth, imgHeight) {
-  let c={
-    vOffset : 0,
-    hOffset:-1,
-    vFiller : -1,
-    hFiller:-1,
+  let c = {
+    vOffset: 0,
+    hOffset: -1,
+    vFiller: -1,
+    hFiller: -1,
     imgWidth: -1,
     imgHeight: -1,
-    vSum:-1,
-    hSum:-1
+    vSum: -1,
+    hSum: -1
   }
   //c.hOffset=height/(6*lines)
-  c.hOffset=height/(4*lines)
-  c.imgHeight = ( height-((lines+1)*c.hOffset))/lines
-  let ratio=imgHeight/imgWidth
-  c.imgWidth = c.imgHeight*ratio
+  //c.hOffset=height/(18*lines)
+  c.hOffset = 96
+  c.imgHeight = (height - ((lines + 1) * c.hOffset)) / lines
+  let ratio = imgHeight / imgWidth
+  c.imgWidth = c.imgHeight * ratio
   //c.hFiller = Math.round( (height -2*c.hOffset - lines*imgHeight)) 
   c.hFiller = 0
-  if (lines > 1 )  {
-    c.hFiller = Math.round( (2*c.hOffset/(lines))) 
+  if (lines > 1) {
+    c.hFiller = Math.round((2 * c.hOffset / (lines)))
   }
-  c.vFiller=(width - c.imgWidth*cols)/cols
+  c.vFiller = (width - c.imgWidth * cols) / cols
   console.log("width ", width, "height ", height, "lines ", lines, "cols ", cols, "imgWidth ", imgWidth, "imgHeight ", imgHeight)
-  c.hSum=2*c.hOffset + lines*c.imgHeight + (lines-1)*c.hFiller
-  c.vSum=cols*(c.imgWidth + c.vFiller)
+  c.hSum = 2 * c.hOffset + lines * c.imgHeight + (lines - 1) * c.hFiller
+  c.vSum = cols * (c.imgWidth + c.vFiller)
 
   for (let a in c) {
     //console.log(" attrib ",a, " ", c[a] )
-    c[a]=Math.round(c[a])
+    c[a] = Math.round(c[a])
   }
   console.log(c)
-  return(c)
+  return (c)
   //console.log(c)
 }
 
 //----------------------------------------
 // Merge with background image
 //----------------------------------------
-async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, cols) {
-  console.log("generateNxBackground() enter  backgroundImg ", backgroundImg)
-  const paths = getFilesPaths(imagesDir, inputFile, backgroundImg, lines + '_' + cols + 'x')
-  const backgroundImagePath = path.join(imagesDir, backgroundImg)
+async function generateNxBackground(P) {
+  console.log("generateNxBackground() enter  backgroundImg ", P.background)
+  const paths = getFilesPaths(P.dir, P.img, P.background, P.lines + '_' + P.cols + 'x')
+  const backgroundImagePath = path.join(P.dir, P.background)
 
-  const width = 1024
-  const height=512
   let meta = {}
   await sharp(paths.inputImagePath)
     .metadata()
@@ -128,13 +127,13 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
 
   //console.log(meta)
   //const ratio = meta.width / meta.height
-  const coefs= await getCoefs(width,height,lines,cols,meta.width,meta.height)
-  console.log("coefs ",coefs)
+  const coefs = await getCoefs(P.width, P.height, P.lines, P.cols, meta.width, meta.height)
+  console.log("coefs ", coefs)
 
   let composites = []
   sharp(backgroundImagePath)
     //Resize background image
-    .resize(width, height, {
+    .resize(P.width, P.height, {
       fit: 'fill'
     })
     .toBuffer()
@@ -142,7 +141,7 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
       // Resize image
       return sharp(paths.inputImagePath)
         .resize(coefs.imgWidth, coefs.imgHeight, {
-      fit: 'fill'
+          fit: 'fill'
         })
         .sharpen()
         .sharpen()
@@ -150,11 +149,11 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
         .toBuffer()
         .then((resizedImageBuffer) => {
           //let topPos = Math.round(hfiller / 2)
-          let topPos=coefs.hOffset
-          for (let l = 0; l < lines; l++) {
+          let topPos = coefs.hOffset
+          for (let l = 0; l < P.lines; l++) {
             //let leftPos = Math.round(coefs.vFiller / 2)
             let leftPos = 0
-            for (let c = 0; c < cols; c++) {
+            for (let c = 0; c < P.cols; c++) {
               composites.push({ input: resizedImageBuffer, left: leftPos, top: topPos },)
               leftPos += coefs.imgWidth + coefs.vFiller
             }
@@ -174,114 +173,18 @@ async function generateNxBackground(imagesDir, inputFile, backgroundImg, lines, 
     })
 }
 
-//----------------------------------------
-// Merge with background image
-//----------------------------------------
-async function OKgenerateNxBackground(imagesDir, inputFile, backgroundImg, lines, cols) {
-  console.log("generateNxBackground() enter  backgroundImg ", backgroundImg)
-  const paths = getFilesPaths(imagesDir, inputFile, backgroundImg, lines + '_' + cols + 'x')
-  const backgroundImagePath = path.join(imagesDir, backgroundImg)
-
-  const width = 1024
-  const imgWidth = Math.round(width / (cols + 1))
-  const height = 512
-  const hOffset=Math.round(height/6)
-  
-  //const borderHeight = Math.round(height/(count+1))
-
-  const vfiller = Math.round(imgWidth / cols);
-  let meta = {}
-  await sharp(paths.inputImagePath)
-    .metadata()
-    .then((metadata) => { meta = metadata })
-
-  //console.log(meta)
-  const ratio = meta.width / meta.height
-  if (ratio > 1.5 || ratio < 0.5)
-    console.log(`generateNxBackground() bad image with/height ratio ${ratio}, unpredictable results `)
-
-  const imgHeight = Math.round(ratio * (imgWidth-50))
-
-  //const borderHeight = Math.round((height-imgHeight)/2)
-  //const borderHeight = 256
-  
-  const hfiller = Math.round( (height -2*hOffset - (lines * imgHeight)) / lines)
-  //console.log(" lines ", lines, " cols ", cols)
-  //console.log("imgWidth ", imgWidth, "imgHeight ", imgHeight)
-  //console.log(" vfiller ", vfiller, " hfiller ", hfiller)
-
-  let composites = []
-  sharp(backgroundImagePath)
-    //Resize background image
-    .resize(width, height, {
-      fit: 'fill'
-    })
-    .toBuffer()
-    .then((resizedBackgroundBuffer) => {
-      // Resize image
-      return sharp(paths.inputImagePath)
-        .resize(imgWidth, imgHeight, {
-      fit: 'fill'
-        })
-        .sharpen()
-        .sharpen()
-        .sharpen()
-        .toBuffer()
-        .then((resizedImageBuffer) => {
-          //let topPos = Math.round(hfiller / 2)
-          let topPos=hOffset
-          for (let l = 0; l < lines; l++) {
-            let leftPos = Math.round(vfiller / 2)
-            for (let c = 0; c < cols; c++) {
-              composites.push({ input: resizedImageBuffer, left: leftPos, top: topPos },)
-              leftPos += imgWidth + vfiller
-            }
-            topPos += imgHeight + hfiller
-          }
-          //console.log(composites)
-          return sharp(resizedBackgroundBuffer)
-            .composite(composites)
-            .toFile(paths.outputImagePath)
-            .then(() => {
-              console.log(`generateNxBackground() Image ${paths.outputImagePath} generated.`);
-            });
-        });
-    })
-    .catch((err) => {
-      console.error('generateNxBackground() Error: ', err);
-    })
-}
-
-
 //---------------------------------------- Fonction principale
-async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
+async function convertImagesToNx(P) {
   try {
-    let files = []
-    console.log("convertImagesToNx() imagesDir", imagesDir, 
-      "inputImagePath", inputImageFile,
-       "background", background)
-    if (inputImageFile.length > 0) {
-      console.log("convertImagesToNx() file ", inputImageFile)
-      files.push(inputImageFile);
-    } else {
-      files = await readJpgFiles(imagesDir).filter(file => !file.endsWith('2x.jpg'));
-    }
-    console.log("convertImagesToNx() files", files)
-    if (files.length === 0) {
-      console.log('convertImagesToNx() No .jpg file found.');
-      return;
-    }
-
-    for (const file of files) {
+    for (const file of P.files) {
       console.log(file)
-      let backgroundImg= background.backgroundImg
-      if (background.backgroundImg.length === 0) {
-        console.log("convertImagesToNx() background colors ",background.colors);
-        backgroundImg=await generateBackgroundRgb(imagesDir, background.colors)
-      } 
-      console.log("convertImagesToNx() backgroundImg", backgroundImg)
-      generateNxBackground(imagesDir, file, backgroundImg, background.format.l, background.format.c);
+      if (P.background.length === 0) {
+        console.log("convertImagesToNx() background colors ", P.color);
+        P.background = await generateBackgroundRgb(P.dir, P.color)
       }
+      console.log("convertImagesToNx() backgroundImg", P.background)
+      generateNxBackground(P);
+    }
   } catch (err) {
     console.log("convertImagesToNx() Exception ", err)
   }
@@ -297,44 +200,62 @@ async function convertImagesToNx(inputImagesDir, inputImageFile, background) {
 // Param3 : format lines,cols 
 //--------------------------------------------------------------------
 
-let inputImageFile = ''
-let rgb = '255,0,0'
-let linesCols = '1,3'
-let backgroundImg = ''
-// Vérifier les arguments de la ligne de commande
-if (process.argv.length > 2) {
-  inputImageFile = process.argv[2];
-}
-if (process.argv.length > 3) {
-  rgb = process.argv[3];
-}
-if (process.argv.length > 4) {
-  linesCols = process.argv[4];
-}
+//--------------------------------- Entry point command line -----------------------
+if (import.meta.main) {
+  console.log("Use jpg2xCli.mjs CLI")
+ }
 
-// check if image file exists
-if (inputImageFile.length > 0 && !fs.existsSync(path.join(imagesDir, `${inputImageFile}`))) {
-  console.error(`Le fichier ${inputImageFile} n'existe pas.`);
-  process.exit(1);
-}
-
-let colors = rgb.split(',').map(Number)
-let fmts = linesCols.split(',').map(Number)
-let format = { l: fmts[0], c: fmts[1] }
-
-// check if backgroud image exists
-if (!rgb.includes(',')) {
-  backgroundImg = rgb
-  let pieces = rgb.split(/[\\/]/)
-  console.log("pieces", pieces)
-  let file = path.join(...pieces)
-  console.log("file", file)
-  //if (rgb.length > 0 && !fs.existsSync(`${file}`)) {
-  if (rgb.length > 0 && !fs.existsSync(path.join(imagesDir, file))) {
-    console.error(`Le fichier ${file} n'existe pas.`);
-    process.exit(1);
+//--------------------------------------------------------------------------------------------
+async function args2P(args) {
+  console.log(args)
+  let p = args
+  p.width=Number(p.width)
+  p.height=Number(p.height)
+  // check if image file exists
+  if (args.img && args.img.length > 0 && !fs.existsSync(path.join(args.dir, `${args.img}`))) {
+    throw new Error(`Le fichier ${args.img} n'existe pas.`);
   }
+
+  // proc
+  p.files = [args.img]
+  /*
+  if (args.img.length > 0) {
+    console.log("convertImagesToNx() file ", args.img)
+    p.files.push(args.img);
+  } else {
+    p.files = await readJpgFiles(args.dir).filter(file => !file.endsWith('x.jpg'));
+  }
+  console.log("convertImagesToNx() files", p.files)
+  if (p.files.length === 0) {
+    throw new Error('convertImagesToNx() No .jpg file found.');
+  }
+    */
+
+  p.color = null
+  if (args.rgb) {
+    let colors = args.rgb.split(',').map(Number)
+    p.color = { r: 0, g: 0, b: 0 }
+    if (colors.length ===3 ) {
+      p.color.r = colors[0]
+      p.color.g = colors[1]
+      p.color.b = colors[2]
+    } else {
+      throw new Error('rgb must be r,g,b');
+    }
+
+  }
+  let lc = args.lc.split(',').map(Number)
+  p.lines = lc[0]
+  p.cols = lc[1]
+  console.log(p)
+  return (p)
 }
 
-let background = { format: format, backgroundImg: backgroundImg, colors: { r: colors[0], g: colors[1], b: colors[2] } }
-convertImagesToNx(imagesDir, inputImageFile, background);
+//--------------------------------------------------------------------------------------------
+async function process(args) {
+  await args2P(args)
+    .then((p) => convertImagesToNx(p))
+    .catch(error => console.log("Error " + error))
+}
+
+export { process }

@@ -15,9 +15,9 @@ cmd
   .option('--lc <lc>', 'lines,cols', '2,3')
   .option('--width <>', 'final width', '1024')
   .option('--height <>', 'final height', '512')
-  .option('--vo, --voffset <>', 'vertical offset', '96')
-  .option('--vp, --vpad <>', 'vertical ', '0')
-  .option('--hp, --hpad <>', 'horizontal padl ', '0')
+  .option('--ho, --hoffset <>', 'horizontal offset', '-1')
+  .option('--vp, --vpad <>', 'vertical pad ', '-1')
+  .option('--hp, --hpad <>', 'horizontal pad ', '-1')
   .option('-v, --verbose', 'enable verbose output');
 cmd.parse();
 const args=cmd.opts()

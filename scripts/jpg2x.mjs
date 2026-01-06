@@ -76,7 +76,7 @@ async function generateBackgroundRgb(imagesDir, background) {
 }
 
 //----------------------------------------
-async function getCoefs(width, height, lines, cols, imgWidth, imgHeight) {
+async function getCoefs(p, imgWidth, imgHeight) {
   let c = {
     vOffset: 0,
     hOffset: -1,
@@ -87,21 +87,23 @@ async function getCoefs(width, height, lines, cols, imgWidth, imgHeight) {
     vSum: -1,
     hSum: -1
   }
-  //c.hOffset=height/(6*lines)
+  c.hOffset=p.height/(6*p.lines)
+  if (p.hoffset && p.hoffset > 0 )
+    c.hOffset=p.hoffset
   //c.hOffset=height/(18*lines)
-  c.hOffset = 96
-  c.imgHeight = (height - ((lines + 1) * c.hOffset)) / lines
-  let ratio = imgHeight / imgWidth
+  //c.hOffset = 96
+  c.imgHeight = (p.height - ((p.lines + 1) * c.hOffset)) / p.lines
+  let ratio = imgWidth/imgHeight
   c.imgWidth = c.imgHeight * ratio
   //c.hFiller = Math.round( (height -2*c.hOffset - lines*imgHeight)) 
   c.hFiller = 0
-  if (lines > 1) {
-    c.hFiller = Math.round((2 * c.hOffset / (lines)))
+  if (p.lines > 1) {
+    c.hFiller = Math.round((2 * c.hOffset / (p.lines)))
   }
-  c.vFiller = (width - c.imgWidth * cols) / cols
-  console.log("width ", width, "height ", height, "lines ", lines, "cols ", cols, "imgWidth ", imgWidth, "imgHeight ", imgHeight)
-  c.hSum = 2 * c.hOffset + lines * c.imgHeight + (lines - 1) * c.hFiller
-  c.vSum = cols * (c.imgWidth + c.vFiller)
+  c.vFiller = (p.width - c.imgWidth * p.cols) / p.cols
+  console.log("width ", p.width, "height ", p.height, "lines ", p.lines, "cols ", p.cols, "imgWidth ", p.imgWidth, "imgHeight ", p.imgHeight)
+  c.hSum = 2 * c.hOffset + p.lines * c.imgHeight + (p.lines - 1) * c.hFiller
+  c.vSum = p.cols * (c.imgWidth + c.vFiller)
 
   for (let a in c) {
     //console.log(" attrib ",a, " ", c[a] )
@@ -127,7 +129,7 @@ async function generateNxBackground(P) {
 
   //console.log(meta)
   //const ratio = meta.width / meta.height
-  const coefs = await getCoefs(P.width, P.height, P.lines, P.cols, meta.width, meta.height)
+  const coefs = await getCoefs(P, meta.width, meta.height)
   console.log("coefs ", coefs)
 
   let composites = []

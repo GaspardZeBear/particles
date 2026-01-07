@@ -76,8 +76,8 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 
 
-const spotLight = new THREE.SpotLight( 0xffffff, 3, 0,Math.PI/3,0,0 );
-spotLight.position.set(0,0,P.cameraZ)
+const spotLight = new THREE.SpotLight( 0xffffff, 3, 0,Math.PI/6,0,0 );
+spotLight.position.set(0,0,Math.round(P.cameraZ/1))
 scene.add( spotLight );
 const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 0,Math.PI/3,0,0.1 );
 spotLight1.position.set(-100,-100,100)

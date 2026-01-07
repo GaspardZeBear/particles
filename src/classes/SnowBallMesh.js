@@ -30,7 +30,7 @@ class SnowBallMesh extends Mesh {
     this.snowGlobeMaterial = new MeshPhongMaterial({
       color: 0x77b5fe,
       transparent: true,
-      opacity: 0.2,
+      opacity: 0.0,
       side: DoubleSide,
       wireframe: false
     });

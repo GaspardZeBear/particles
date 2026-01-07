@@ -1,5 +1,6 @@
 import { Command } from 'commander';
-import {process} from './jpg2x.mjs'
+import { process } from './jpg2x.mjs'
+import { Konsol } from './Konsol.mjs';
 
 const cmd = new Command();
 
@@ -20,7 +21,15 @@ cmd
   .option('--hp, --hpad <>', 'horizontal pad ', '-1')
   .option('-v, --verbose', 'enable verbose output');
 cmd.parse();
-const args=cmd.opts()
-//console.log(args)
-let background = { format: {l:2,c:3}, backgroundImg: '', colors: { r: 0, g: 0, b: 0 } }
-process(args);
+const args = cmd.opts()
+process(args)
+for (let m of Konsol.getStack()) {
+  console.log("----> " + m)
+}
+
+
+
+
+
+
+

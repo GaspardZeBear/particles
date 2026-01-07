@@ -1,13 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 import sharp from 'sharp'
-import { rgbShift } from 'three/examples/jsm/tsl/display/RGBShiftNode.js';
+//import { rgbShift } from 'three/examples/jsm/tsl/display/RGBShiftNode.js';
+//import { console } from './console.mjs';
 
 const imagesDir = '../textures/';
 
-
 //----------------------------------------
-function readJpgFiles(dir) {
+function XreadJpgFiles(dir) {
   return new Promise((resolve, reject) => {
     fs.readdir(dir, (err, files) => {
       if (err) {
@@ -26,11 +26,8 @@ function readJpgFiles(dir) {
 //----------------------------------------
 function getBackgroundAsString(background) {
   if (typeof background === "string") {
-    console.log("Backroung file ", background)
-    //return ('_' + path.basename(background,'.jpg') + '_')
-    //return ('_' + path.name(background,'.jpg') + '_')
+    console.log("getBackgroundAsString() Backroung file ", background)
     let name = background.split(/[\\/]/).pop().replace(".jpg", "");
-    //console.log("y",name)
     return ('_' + name + '_')
   };
   return (`_${background.r}_${background.g}_${background.b}_`)
@@ -38,11 +35,9 @@ function getBackgroundAsString(background) {
 
 //----------------------------------------
 function getFilesPaths(imagesDir, inputFile, background, suffix) {
-  console.log("getFilesPaths() background", background, " suffix ", suffix)
   const inputImagePath = path.join(imagesDir, inputFile)
-  console.log("getFilesPaths() inputImagePath", inputImagePath)
   const outputImagePath = path.join(imagesDir, inputFile.replace('.jpg', getBackgroundAsString(background) + suffix + '.jpg'))
-  console.log("getFilesPaths() ouputImagePath", outputImagePath)
+  console.log("getFilesPaths() background", background, " suffix ", suffix, " inputImagePath", inputImagePath, " outputImagePath", outputImagePath)
   return ({ inputImagePath: inputImagePath, outputImagePath: outputImagePath })
 }
 
@@ -65,13 +60,10 @@ async function generateBackgroundRgb(imagesDir, background) {
     .toFile(paths.outputImagePath)
     .then(() => {
       console.log(`generateBackgroundRgb() Image ${paths.outputImagePath} generated.`);
-      console.log("generateBackgroundRgb() return in then ", paths.outputImagePath);
-      //return(paths.outputImagePath)
     })
     .catch((err) => {
       console.error(`generateBackgroundRgb()  Error generating ${paths.outputImagePath} `, err);
     });
-  console.log("generateBackgroundRgb() return", paths.outputImagePath);
   return (paths.outputImagePath)
 }
 
@@ -87,13 +79,13 @@ async function getCoefs(p, imgWidth, imgHeight) {
     vSum: -1,
     hSum: -1
   }
-  c.hOffset=p.height/(6*p.lines)
-  if (p.hoffset && p.hoffset > 0 )
-    c.hOffset=p.hoffset
+  c.hOffset = p.height / (6 * p.lines)
+  if (p.hoffset && p.hoffset > 0)
+    c.hOffset = p.hoffset
   //c.hOffset=height/(18*lines)
   //c.hOffset = 96
   c.imgHeight = (p.height - ((p.lines + 1) * c.hOffset)) / p.lines
-  let ratio = imgWidth/imgHeight
+  let ratio = imgWidth / imgHeight
   c.imgWidth = c.imgHeight * ratio
   //c.hFiller = Math.round( (height -2*c.hOffset - lines*imgHeight)) 
   c.hFiller = 0
@@ -101,7 +93,8 @@ async function getCoefs(p, imgWidth, imgHeight) {
     c.hFiller = Math.round((2 * c.hOffset / (p.lines)))
   }
   c.vFiller = (p.width - c.imgWidth * p.cols) / p.cols
-  console.log("width ", p.width, "height ", p.height, "lines ", p.lines, "cols ", p.cols, "imgWidth ", p.imgWidth, "imgHeight ", p.imgHeight)
+  //console.log("console.log getCoefs() p=", p, " imgWidth ", imgWidth, "imgHeight ", imgHeight)
+  await console.log("console.log getCoefs() p=", JSON.stringify(p), " imgWidth ", imgWidth, "imgHeight ", imgHeight)
   c.hSum = 2 * c.hOffset + p.lines * c.imgHeight + (p.lines - 1) * c.hFiller
   c.vSum = p.cols * (c.imgWidth + c.vFiller)
 
@@ -109,9 +102,8 @@ async function getCoefs(p, imgWidth, imgHeight) {
     //console.log(" attrib ",a, " ", c[a] )
     c[a] = Math.round(c[a])
   }
-  console.log(c)
+  await console.log("getCoefs() c=", JSON.stringify(c))
   return (c)
-  //console.log(c)
 }
 
 //----------------------------------------
@@ -126,11 +118,8 @@ async function generateNxBackground(P) {
   await sharp(paths.inputImagePath)
     .metadata()
     .then((metadata) => { meta = metadata })
-
-  //console.log(meta)
-  //const ratio = meta.width / meta.height
   const coefs = await getCoefs(P, meta.width, meta.height)
-  console.log("coefs ", coefs)
+  //console.log("coefs ", coefs)
 
   let composites = []
   sharp(backgroundImagePath)
@@ -150,10 +139,8 @@ async function generateNxBackground(P) {
         .sharpen()
         .toBuffer()
         .then((resizedImageBuffer) => {
-          //let topPos = Math.round(hfiller / 2)
           let topPos = coefs.hOffset
           for (let l = 0; l < P.lines; l++) {
-            //let leftPos = Math.round(coefs.vFiller / 2)
             let leftPos = 0
             for (let c = 0; c < P.cols; c++) {
               composites.push({ input: resizedImageBuffer, left: leftPos, top: topPos },)
@@ -161,7 +148,6 @@ async function generateNxBackground(P) {
             }
             topPos += coefs.imgHeight + coefs.hFiller
           }
-          //console.log(composites)
           return sharp(resizedBackgroundBuffer)
             .composite(composites)
             .toFile(paths.outputImagePath)
@@ -171,20 +157,16 @@ async function generateNxBackground(P) {
         });
     })
     .catch((err) => {
-      console.error('generateNxBackground() Error: ', err);
+      consol.error('generateNxBackground() Error: ', err);
     })
 }
 
-//---------------------------------------- Fonction principale
-async function convertImagesToNx(P) {
+//---------------------------------------- 
+function convertImagesToNx(P) {
+  console.log(P)
   try {
     for (const file of P.files) {
-      console.log(file)
-      if (P.background.length === 0) {
-        console.log("convertImagesToNx() background colors ", P.color);
-        P.background = await generateBackgroundRgb(P.dir, P.color)
-      }
-      console.log("convertImagesToNx() backgroundImg", P.background)
+      console.log("convertImagesToNx() " + P.img + " backgroundImg ", P.background)
       generateNxBackground(P);
     }
   } catch (err) {
@@ -192,55 +174,34 @@ async function convertImagesToNx(P) {
   }
 }
 
-//======================================================================
-// Param1 : image file
-// Param2 : merge : 
-//   If param 2 contains commas, it is Red Green Blue pattern
-//   -> generate 2x and 3x file
-//   Else, it's a background image file
-//   -> generate 3x file
-// Param3 : format lines,cols 
-//--------------------------------------------------------------------
-
-//--------------------------------- Entry point command line -----------------------
-if (import.meta.main) {
-  console.log("Use jpg2xCli.mjs CLI")
- }
-
 //--------------------------------------------------------------------------------------------
 async function args2P(args) {
   console.log(args)
   let p = args
-  p.width=Number(p.width)
-  p.height=Number(p.height)
+  p.width = Number(p.width)
+  p.height = Number(p.height)
   // check if image file exists
   if (args.img && args.img.length > 0 && !fs.existsSync(path.join(args.dir, `${args.img}`))) {
-    throw new Error(`Le fichier ${args.img} n'existe pas.`);
+    throw new Error(`File ${args.img} not found.`);
+  }
+  if (args.background && args.background.length > 0 && !fs.existsSync(path.join(args.dir, `${args.background}`))) {
+    throw new Error(`File ${args.background} not found.`);
   }
 
-  // proc
+  if (args.background && args.rgb) {
+    throw new Error(`Choose between file and rgb`);
+  }
+
   p.files = [args.img]
-  /*
-  if (args.img.length > 0) {
-    console.log("convertImagesToNx() file ", args.img)
-    p.files.push(args.img);
-  } else {
-    p.files = await readJpgFiles(args.dir).filter(file => !file.endsWith('x.jpg'));
-  }
-  console.log("convertImagesToNx() files", p.files)
-  if (p.files.length === 0) {
-    throw new Error('convertImagesToNx() No .jpg file found.');
-  }
-    */
-
   p.color = null
   if (args.rgb) {
     let colors = args.rgb.split(',').map(Number)
     p.color = { r: 0, g: 0, b: 0 }
-    if (colors.length ===3 ) {
+    if (colors.length === 3) {
       p.color.r = colors[0]
       p.color.g = colors[1]
       p.color.b = colors[2]
+      args.background = await generateBackgroundRgb(args.dir, args.color)
     } else {
       throw new Error('rgb must be r,g,b');
     }
@@ -249,15 +210,30 @@ async function args2P(args) {
   let lc = args.lc.split(',').map(Number)
   p.lines = lc[0]
   p.cols = lc[1]
-  console.log(p)
+  //console.log(p)
   return (p)
 }
 
 //--------------------------------------------------------------------------------------------
-async function process(args) {
-  await args2P(args)
-    .then((p) => convertImagesToNx(p))
+function Xprocess(args) {
+  return args2P(args)
+    .then((p) => {
+      convertImagesToNx(p)
+      console.log("process() over)")
+    })
     .catch(error => console.log("Error " + error))
+}
+
+//--------------------------------------------------------------------------------------------
+async function process(args) {
+  let p= await args2P(args)
+  console.log(p)
+  convertImagesToNx(p)
+}
+
+//--------------------------------- Entry point command line -----------------------
+if (import.meta.main) {
+  console.log("Use jpg2xCli.mjs CLI")
 }
 
 export { process }

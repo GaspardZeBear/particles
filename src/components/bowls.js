@@ -1,18 +1,25 @@
 import { BasicParams } from "../params/BasicParams.mjs";
 import ThingMesh from "../classes/ThingMesh.js";
 
-function createBowls({ bowlsCount = 10, w = 400, h = 400, imgs = [], thingMeshRadius = 20, bowlsPerOrbit = 1, snowGlobeRadius = 50 }) {
+function createBowls({ bowlsCount = 10, w = 400, h = 400, imgs = [], pThingMeshRadius = 20, bowlsPerOrbit = 1, snowGlobeRadius = 50 }) {
 
   let meshes = []
   let radius = snowGlobeRadius
   let angle = 0
-  console.log(BasicParams.getProfile())
-  const cameraZ=BasicParams.getProfile().cameraZ
-  for (let i = 1; i < bowlsCount+1; i++) {
+  console.log(`pThingMeshRadius=${pThingMeshRadius}`)
+  const cameraZ = BasicParams.getProfile().cameraZ
+
+
+  for (let i = 1; i < bowlsCount + 1; i++) {
+    let thingMeshRadius = pThingMeshRadius
+    if (Array.isArray(pThingMeshRadius) && pThingMeshRadius.length == 2) {
+      console.log(` pThingMeshRadius is array`)
+      thingMeshRadius = pThingMeshRadius[0] + Math.random() * (pThingMeshRadius[1] - pThingMeshRadius[0])
+    }
     radius += thingMeshRadius
-    console.log(radius, )
+    console.log(` ${radius} thingMeshRadius=${thingMeshRadius}`)
     //if ( radius > BasicParams.getProfile()/10) {
-    if ( radius > cameraZ *0.75 ) {
+    if (radius > cameraZ * 0.75) {
       console.log("Radius exceed cameraZ, stop bowls generation")
       break
       //radius = snowGlobeRadius
@@ -21,11 +28,11 @@ function createBowls({ bowlsCount = 10, w = 400, h = 400, imgs = [], thingMeshRa
     let bowlSpeed = Math.random() * 0.03 + 0.001
     for (let b = 0; b < bowlsPerOrbit; b++) {
       let idx = Math.floor(Math.random() * imgs.length)
-      
+
       let mesh = new ThingMesh(imgs[idx], thingMeshRadius)
-      let nAngle= angle + b * 2 * Math.PI / bowlsPerOrbit
-      console.log("ceateBowls() creating bowl ", i+b , " nAngle ", nAngle," img ", imgs[idx])
-      mesh.initPosition(radius, nAngle , bowlSpeed)
+      let nAngle = angle + b * 2 * Math.PI / bowlsPerOrbit
+      console.log("createBowls() creating bowl ", i + b, " nAngle ", nAngle, " img ", imgs[idx])
+      mesh.initPosition(radius, nAngle, bowlSpeed)
       meshes.push(mesh)
     }
   }

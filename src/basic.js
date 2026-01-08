@@ -22,7 +22,7 @@ import { BasicParams } from './params/BasicParams.mjs';
 
 //--------------------------------------------------------------
 
-console.log("Entering  basic.js " + BasicParams)
+console.log("Entering  basic.js " )
 
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
@@ -59,7 +59,7 @@ const meshes= createBowls({
   w:window.innerWidth,
   h:window.innerHeight,
   imgs:P.imgs,
-  thingMeshRadius:P.thingMeshRadius,
+  pThingMeshRadius:P.thingMeshRadius,
   bowlsPerOrbit:P.bowlsPerOrbit,
   snowGlobeRadius:P.snowGlobeRadius
 })
@@ -92,7 +92,44 @@ scene.add( spotLight3 );
 
 var axisHelper = new THREE.AxesHelper(5000);
 //scene.add(axisHelper);
+// Variable globale pour l'AudioContext
+let audioContext;
+let audioLoader;
 
+// Fonction pour initialiser l'audio après un geste utilisateur
+function initAudio() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    audioLoader = new THREE.AudioLoader();
+  }
+}
+//--------------------------------------------------------------------------------------
+// Écouteur d'événement pour un clic utilisateur
+window.addEventListener('click', () => {
+  initAudio();
+
+  // Exemple de chargement et de lecture d'un fichier audio
+  const listener = new THREE.AudioListener();
+  const sound = new THREE.Audio(listener);
+  audioLoader.load('../sounds/sardouPasMort.mp3', (buffer) => {
+    sound.setBuffer(buffer);
+    sound.setLoop(false);
+    sound.setVolume(1);
+    sound.play();
+  });
+
+  // Retirer l'écouteur après l'initialisation
+  window.removeEventListener('click', initAudio);
+}, { once: true });
+
+// Ajouter un message pour informer l'utilisateur
+const info = document.createElement('div');
+info.style.position = 'absolute';
+info.style.top = '10px';
+info.style.width = '100%';
+info.style.textAlign = 'center';
+info.textContent = 'Cliquez n’importe où pour activer l’audio.';
+document.body.appendChild(info);
 
 function animate(t) {
   requestAnimationFrame(animate);

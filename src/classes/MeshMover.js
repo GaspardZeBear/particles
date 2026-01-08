@@ -37,13 +37,13 @@ class MeshMover {
     const pos = this.getXYZ(this.orbit, this.theta, this.phi)
     //this.theta += this.angularSpeed / (5+2*Math.cos(this.phi))
     //this.phi += this.angularSpeed / (6+2*Math.cos(this.phi))
-    this.theta += this.angularSpeed / 8
-    this.phi += this.angularSpeed / 8
+    this.theta += this.angularSpeed / 20
+    this.phi += this.angularSpeed / 20
     this.mesh.position.x = pos.x
     this.mesh.position.y = pos.y
     this.mesh.position.z = pos.z
     this.mesh.rotateX(Math.random() * Math.PI / 600)
-    this.mesh.rotateY(Math.random() * Math.PI / 300)
+    this.mesh.rotateY(Math.random() * Math.PI / 600)
     this.mesh.rotateZ(Math.random() * Math.PI / 600)
   }
 

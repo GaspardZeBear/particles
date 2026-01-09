@@ -94,63 +94,6 @@ scene.add(spotLight3);
 var axisHelper = new THREE.AxesHelper(5000);
 //scene.add(axisHelper);
 
-/*
-//--------------------------------------------------------------------------------------
-// Variable globale pour l'AudioContext
-let audioContext;
-let audioLoader;
-let analyser;
-let isPlaying = false
-let sound
-// get the average frequency of the sound
-//const data = analyser.getAverageFrequency();
-
-// Fonction pour initialiser l'audio après un geste utilisateur
-function initAudio() {
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    console.log(audioContext.sampleRate);
-    audioLoader = new THREE.AudioLoader();
-    const listener = new THREE.AudioListener();
-    sound = new THREE.Audio(listener);
-    analyser = new THREE.AudioAnalyser(sound, 64);
-  }
-}
-
-// Écouteur d'événement pour un clic utilisateur
-window.addEventListener('click', () => {
-  initAudio();
-
-  if (!isPlaying) {
-    audioLoader.load('../sounds/sardouPasMort.mp3', (buffer) => {
-      sound.setBuffer(buffer);
-      sound.setLoop(false);
-      sound.setVolume(1);
-      sound.play();
-      isPlaying = true;
-    });
-  } else {
-    sound.stop();
-    isPlaying = false;
-  }
-});
-
-// Ajouter un message pour informer l'utilisateur
-const info = document.createElement('div');
-info.style.position = 'absolute';
-info.style.top = '10px';
-info.style.width = '100%';
-info.style.textAlign = 'center';
-info.textContent = 'Cliquez n’importe où pour activer l’audio.';
-document.body.appendChild(info);
-
-// Variables pour la détection de battement
-let lastBeatTime = 0;
-const beatThreshold = 120;
-const beatHoldTime = 200;
-const lowEndSlice = 10
-*/
-
 let sound=new Sound({mp3:'../../sounds/sardouPasMort.mp3'})
 
 //----------------------------------------------------------------------------------

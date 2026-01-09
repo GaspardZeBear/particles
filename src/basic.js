@@ -9,6 +9,7 @@ import { createScene } from "./components/scene.js";
 //import { or, texture } from "three/tsl";
 import { createRenderer } from "./components/renderer.js";
 import ThingMesh from "./classes/ThingMesh.js";
+import Sound from "./classes/Sound.mjs";
 import SnowBallMesh from "./classes/SnowBallMesh.js";
 import ParticlesMesh from "./classes/ParticlesMesh.js";
 import { createBowls } from "./components/bowls.js";
@@ -22,53 +23,53 @@ import { BasicParams } from './params/BasicParams.mjs';
 
 //--------------------------------------------------------------
 
-console.log("Entering  basic.js " )
+console.log("Entering  basic.js ")
 
 const qString = window.location.search;
 const params = new URLSearchParams(qString);
 BasicParams.setProfile(profile)
-if ( params.get("profile") ) {
+if (params.get("profile")) {
   BasicParams.setProfile(params.get("profile"))
 }
 //let P=BasicParams.getProfile().constructor
-let P=BasicParams.getProfile()
-B64Loader.b64=b64
-if ( params.get("b64") ) {
-  B64Loader.b64=params.get("b64")
-} 
+let P = BasicParams.getProfile()
+B64Loader.b64 = b64
+if (params.get("b64")) {
+  B64Loader.b64 = params.get("b64")
+}
 
-const renderer= createRenderer()
+const renderer = createRenderer()
 const camera = createCamera({
-  fov:P.cameraFov,
-  ratio:window.innerWidth/window.innerHeight,
-  near:P.cameraNear,
-  far:P.cameraFar10000,
-  x:P.cameraX,
-  y:P.cameraY,
-  z:P.cameraZ
+  fov: P.cameraFov,
+  ratio: window.innerWidth / window.innerHeight,
+  near: P.cameraNear,
+  far: P.cameraFar10000,
+  x: P.cameraX,
+  y: P.cameraY,
+  z: P.cameraZ
 })
 const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.update()
 const scene = createScene('')
-const sceneBackground=createPlaneBackground(P.backgroundImg,window.innerWidth,window.innerHeight,-1000)
-scene.background=sceneBackground
-scene.backgroundIntensity=0.3
+const sceneBackground = createPlaneBackground(P.backgroundImg, window.innerWidth, window.innerHeight, -1000)
+scene.background = sceneBackground
+scene.backgroundIntensity = 0.3
 
-const meshes= createBowls({
-  bowlsCount:P.bowlsCount,
-  w:window.innerWidth,
-  h:window.innerHeight,
-  imgs:P.imgs,
-  pThingMeshRadius:P.thingMeshRadius,
-  bowlsPerOrbit:P.bowlsPerOrbit,
-  snowGlobeRadius:P.snowGlobeRadius
+const meshes = createBowls({
+  bowlsCount: P.bowlsCount,
+  w: window.innerWidth,
+  h: window.innerHeight,
+  imgs: P.imgs,
+  pThingMeshRadius: P.thingMeshRadius,
+  bowlsPerOrbit: P.bowlsPerOrbit,
+  snowGlobeRadius: P.snowGlobeRadius
 })
 
-for (let i=0; i<meshes.length; i++) {
+for (let i = 0; i < meshes.length; i++) {
   scene.add(meshes[i])
 }
 
-const sMesh0=new SnowBallMesh(P.snowBallImg,P.snowGlobeRadius,P.flakesCount)
+const sMesh0 = new SnowBallMesh(P.snowBallImg, P.snowGlobeRadius, P.flakesCount)
 sMesh0.initPosition({})
 scene.add(sMesh0)
 
@@ -77,50 +78,62 @@ const hemiLight = new THREE.HemisphereLight(0xffffff, 0x000000);
 scene.add(hemiLight);
 
 
-const spotLight = new THREE.SpotLight( 0xffffff, 3, P.cameraZ,Math.PI/3,0,0 );
-spotLight.position.set(0,0,Math.round(P.cameraZ/1))
-scene.add( spotLight );
-const spotLight1 = new THREE.SpotLight( 0xff00ff, 5.0, 0,Math.PI/3,0,0.1 );
-spotLight1.position.set(-100,-100,100)
-scene.add( spotLight1 );
-const spotLight2 = new THREE.SpotLight( 0x00ff00, 5.0, 200,Math.PI/3,0,0.1 );
-spotLight2.position.set(100,100,100)
-scene.add( spotLight2 );
-const spotLight3 = new THREE.SpotLight( 0x0000ff, 5.0, 200,Math.PI/6,0,0.1 );
-spotLight3.position.set(0,100,100)
-scene.add( spotLight3 );
+const spotLight = new THREE.SpotLight(0xffffff, 3, P.cameraZ, Math.PI / 3, 0, 0);
+spotLight.position.set(0, 0, Math.round(P.cameraZ / 1))
+scene.add(spotLight);
+const spotLight1 = new THREE.SpotLight(0xff00ff, 5.0, 0, Math.PI / 3, 0, 0.1);
+spotLight1.position.set(-100, -100, 100)
+scene.add(spotLight1);
+const spotLight2 = new THREE.SpotLight(0x00ff00, 5.0, 200, Math.PI / 3, 0, 0.1);
+spotLight2.position.set(100, 100, 100)
+scene.add(spotLight2);
+const spotLight3 = new THREE.SpotLight(0x0000ff, 5.0, 200, Math.PI / 6, 0, 0.1);
+spotLight3.position.set(0, 100, 100)
+scene.add(spotLight3);
 
 var axisHelper = new THREE.AxesHelper(5000);
 //scene.add(axisHelper);
+
+/*
+//--------------------------------------------------------------------------------------
 // Variable globale pour l'AudioContext
 let audioContext;
 let audioLoader;
+let analyser;
+let isPlaying = false
+let sound
+// get the average frequency of the sound
+//const data = analyser.getAverageFrequency();
 
 // Fonction pour initialiser l'audio après un geste utilisateur
 function initAudio() {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    console.log(audioContext.sampleRate);
     audioLoader = new THREE.AudioLoader();
+    const listener = new THREE.AudioListener();
+    sound = new THREE.Audio(listener);
+    analyser = new THREE.AudioAnalyser(sound, 64);
   }
 }
-//--------------------------------------------------------------------------------------
+
 // Écouteur d'événement pour un clic utilisateur
 window.addEventListener('click', () => {
   initAudio();
 
-  // Exemple de chargement et de lecture d'un fichier audio
-  const listener = new THREE.AudioListener();
-  const sound = new THREE.Audio(listener);
-  audioLoader.load('../sounds/sardouPasMort.mp3', (buffer) => {
-    sound.setBuffer(buffer);
-    sound.setLoop(false);
-    sound.setVolume(1);
-    sound.play();
-  });
-
-  // Retirer l'écouteur après l'initialisation
-  window.removeEventListener('click', initAudio);
-}, { once: true });
+  if (!isPlaying) {
+    audioLoader.load('../sounds/sardouPasMort.mp3', (buffer) => {
+      sound.setBuffer(buffer);
+      sound.setLoop(false);
+      sound.setVolume(1);
+      sound.play();
+      isPlaying = true;
+    });
+  } else {
+    sound.stop();
+    isPlaying = false;
+  }
+});
 
 // Ajouter un message pour informer l'utilisateur
 const info = document.createElement('div');
@@ -131,10 +144,37 @@ info.style.textAlign = 'center';
 info.textContent = 'Cliquez n’importe où pour activer l’audio.';
 document.body.appendChild(info);
 
+// Variables pour la détection de battement
+let lastBeatTime = 0;
+const beatThreshold = 120;
+const beatHoldTime = 200;
+const lowEndSlice = 10
+*/
+
+let sound=new Sound({mp3:'../../sounds/sardouPasMort.mp3'})
+
+//----------------------------------------------------------------------------------
 function animate(t) {
   requestAnimationFrame(animate);
+
+/*  //console.log(typeof(analyser))
+  if (isPlaying) {
+    const data = analyser.getFrequencyData();
+    
+    const lowEnd = data.slice(0, lowEndSlice).reduce((a, b) => a + b, 0) / 10;
+    console.log("t=", t, "lowEnd= ", lowEnd)
+    const currentTime = Date.now();
+    if ( (lowEnd > beatThreshold) && (currentTime - lastBeatTime > beatHoldTime) ) {
+      lastBeatTime = currentTime;
+      sMesh0.scale.set(1.1, 1.1, 1.1);
+    } else {
+      sMesh0.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+    }
+  }
+    */
+
   sMesh0.move()
-  for (let i=0; i<meshes.length; i++) {
+  for (let i = 0; i < meshes.length; i++) {
     meshes[i].move()
   }
   renderer.render(scene, camera)

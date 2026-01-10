@@ -93,29 +93,25 @@ scene.add(spotLight3);
 
 var axisHelper = new THREE.AxesHelper(5000);
 //scene.add(axisHelper);
-
-let sound=new Sound({mp3:'../../sounds/sardouPasMort.mp3'})
+let sound
+if (P.music) {
+sound = new Sound({
+  bpm:P.music.bpm,
+  beatThreshold: P.music.beatThreshold,
+  beatHoldTime: P.music.beatHoldTime,
+  lowEndSlice: P.music.lowEndSlice,
+  mp3: P.music.mp3
+})
+}
 
 //----------------------------------------------------------------------------------
 function animate(t) {
   requestAnimationFrame(animate);
-
-/*  //console.log(typeof(analyser))
-  if (isPlaying) {
-    const data = analyser.getFrequencyData();
-    
-    const lowEnd = data.slice(0, lowEndSlice).reduce((a, b) => a + b, 0) / 10;
-    console.log("t=", t, "lowEnd= ", lowEnd)
-    const currentTime = Date.now();
-    if ( (lowEnd > beatThreshold) && (currentTime - lastBeatTime > beatHoldTime) ) {
-      lastBeatTime = currentTime;
-      sMesh0.scale.set(1.1, 1.1, 1.1);
-    } else {
-      sMesh0.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
-    }
+  if (sound && sound.beat(t)) {
+    sMesh0.scale.set(1.1, 1.1, 1.1);
+  } else {
+    sMesh0.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
   }
-    */
-
   sMesh0.move()
   for (let i = 0; i < meshes.length; i++) {
     meshes[i].move()

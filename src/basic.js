@@ -15,7 +15,7 @@ import ParticlesMesh from "./classes/ParticlesMesh.js";
 import { createBowls } from "./components/bowls.js";
 import { b64, profile } from "./components/paramSet.mjs";
 import { createPlaneBackground } from "./components/background.js";
-import { B64Loader } from './classes/B64Loader.js';
+import { B64Loader } from './classes/B64Loader.mjs';
 
 //-----------Parm section ------------------------------------------
 import { BasicParams } from './params/BasicParams.mjs';

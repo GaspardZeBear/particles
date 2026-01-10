@@ -26,14 +26,17 @@ app.post('/log', (req, res) => {
   //message += JSON.stringify(req.body.msg); // Assuming data has a key 'message'
   // Process the data here (e.g., store in database, send an email)
   counter += 1
-  console.log("Received ", counter)
-  let message = JSON.stringify(req.body) + "\n"
-  fs.appendFile('server.log', message, (err) => {
+  //console.log("Received ", counter)
+  let message = JSON.stringify(req.body)
+  console.log("Received ", counter, " message ", message)
+  /*
+   fs.appendFile('LogServer.log', message+"\n", (err) => {
     if (err) {
       console.error('Error when writing file:', err);
       return;
     }
   })
+  */
   res.send('POST request received successfully!');
 })
 

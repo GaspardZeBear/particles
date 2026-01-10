@@ -4,6 +4,8 @@ import {
     AudioListener,
     AudioLoader
 } from 'three';
+import { Konsol} from '../../scripts/Konsol.mjs'
+import { B64Loader } from './B64Loader.mjs';
 
 
 class Sound {
@@ -26,7 +28,8 @@ class Sound {
         this.addAudioMsgDiv()
         this.startStopAudio()
         this.sumTimes = 0
-        this.musicPosition=0
+        this.musicPosition = 0
+        this.log = new Konsol("http://localhost:1961/log",1000)
         console.log(this.params)
     }
 
@@ -40,28 +43,57 @@ class Sound {
             this.audioLoader = new AudioLoader();
             this.listener = new AudioListener();
             this.sound = new Audio(this.listener);
-            this.analyser = new AudioAnalyser(this.sound, 64);
+            this.analyser = new AudioAnalyser(this.sound, 128);
         }
     }
 
-    //--------------------------------------------------------------------------
-    startStopAudio() {
+     //--------------------------------------------------------------------------
+    XstartStopAudio() {
         window.addEventListener('click', () => {
             this.initAudio();
             if (!this.isPlaying) {
                 this.audioLoader.load(this.params.mp3, (buffer) => {
                     this.sound.setBuffer(buffer);
-                    this.sound.setLoop(false);
+                    this.sound.setLoop(true);
                     this.sound.setVolume(1);
                     this.sound.play(0);
-                    this.sound.loopStart=this.musicPosition;
+                    this.sound.loopStart = this.musicPosition;
                     this.startTime = this.audioContext.currentTime
                     this.isPlaying = true;
                 });
             } else {
                 //this.musicPosition = this.audioContext.currentTime - this.startTime + this.sound.offset
                 //- this.sound.startTime + this.sound.offset
-                console.log("musicOffset " , this.sound.offset )
+                console.log("musicOffset ", this.sound.offset)
+                this.sound.stop();
+                this.isPlaying = false;
+            }
+        });
+    }
+
+
+    //--------------------------------------------------------------------------
+    startStopAudio() {
+        window.addEventListener('click', () => {
+            this.initAudio();
+            if (!this.isPlaying) {
+                let buffer=new B64Loader().b64loadSound(this.params.mp3,this.sound)
+                /*
+                //this.audioLoader.load(this.params.mp3, (buffer) => {
+                    this.sound.setBuffer(buffer);
+                    this.sound.setLoop(true);
+                    this.sound.setVolume(1);
+                    this.sound.play(0);
+                    this.sound.loopStart = this.musicPosition;
+                    this.startTime = this.audioContext.currentTime
+                    this.isPlaying = true;
+                //});
+                */
+               this.isPlaying = true;
+            } else {
+                //this.musicPosition = this.audioContext.currentTime - this.startTime + this.sound.offset
+                //- this.sound.startTime + this.sound.offset
+                console.log("musicOffset ", this.sound.offset)
                 this.sound.stop();
                 this.isPlaying = false;
             }
@@ -80,41 +112,22 @@ class Sound {
         document.body.appendChild(info);
     }
 
-    httpLog(tmstp, t, type, msg) {
-        fetch("http://localhost:1961/log", {
-            method: "POST",
-            body: JSON.stringify({
-                tmstp: tmstp,
-                t: t,
-                msg: msg,
-                type: type,
-            }),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            }
-        })
-            .catch((err) => { })
-            .then((response) => { })
-            .then((json) => console.log(json));
-
-
-    }
-
+    //--------------------------------------------------------------------------
     beat(t) {
         if (this.isPlaying) {
             const ddate = new Date().toISOString()
             const currentTime = Date.now();
             const freqs = this.analyser.getFrequencyData();
             // console.log(freqs)
-            
-            let buf=""
-            for (let k=0;k<freqs.length;k++) {
+/*
+            let buf = ""
+            for (let k = 0; k < freqs.length; k++) {
                 buf += freqs[k] + " "
             }
-            this.httpLog(ddate, t, "freqs", buf)
-            
+            this.log.httpLog(ddate, t, "freqs", buf)
+*/
             const lowEnd = freqs.slice(0, this.params.lowEndSlice).reduce((a, b) => a + b, 0) / this.params.lowEndSlice;
-            this.httpLog(ddate, t, "lowEnd", lowEnd)
+            //this.log.httpLog(ddate, t, "lowEnd", lowEnd)
             if ((lowEnd > this.params.beatThreshold) && (currentTime - this.lastBeatTime > this.params.beatHoldTime)) {
                 this.lastBeatTime = currentTime;
                 return (true)
@@ -127,7 +140,7 @@ class Sound {
     }
 
 
-    Fixbeat(t) {
+    FixedBeat(t) {
         if (this.isPlaying) {
             const currentTime = Date.now();
             let elapsed = currentTime - this.lastTime

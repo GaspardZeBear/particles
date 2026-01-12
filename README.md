@@ -47,28 +47,25 @@ npm install three@latest
 ```
 Note : npm list --no-unicode > requirements.txt
 
-## Embed images 
+## Embed images and sounds
 
 Note : images used for textures are data uris in a map called textures. <br>
 Useful to run from explorer without server
 
-- from scripts/ run : node jpg2b64.mjs <profile>
-  -- this will generate a js module components/textures_b64.js containing images from texture  base 64 encoded 
+- from scripts/ run : node 2b64.mjs <profile>
+  -- this will generate modules  components/textures_b64.mjs containing images and components/sounds_b64.mjs 
   -- note 
-    --- <profile> refers to class in params/BasicParams.mjs
-    --- if no <profile> is given, all images are included ! Avoid (generate hug target) !
+    --- <profile> refers to profile in params/BasicParamsConf.mjs
     
-
-- cleanup components/textures_b64.js (remove unwanted images) if necessary
+    - cleanup components/textures_b64.js (remove unwanted images) if necessary
 
 ## Deployment
 
 ### Steps :
 
 0. (if images do not exist) Prepare images in texture
-1. (if profile does not ) Create profile in BasicParams.js (create profile class and setup getProfile())
-2. Generate b64 images in textures/textures_b64.js : 
-  - node jpg2b64.mjs (see "embed images")
+1. (if profile does not ) Create profile in BasicParamsConf.js 2. Generate b64 images in textures/textures_b64.js : 
+  - node 2b64.mjs (see "embed images and sounds")
 3. Generate profile and b64 flag in components/paramSet.mjs : 
   - node setParams.mjs <profile> <b64> : <profile> from BasicParams.js and <b64> true|false
 4. build static site in dist/ : 

@@ -10,6 +10,7 @@ import { createScene } from "./components/scene.js";
 import { createRenderer } from "./components/renderer.js";
 import ThingMesh from "./classes/ThingMesh.js";
 import Sound from "./classes/Sound.mjs";
+import SoundBase from "./classes/SoundBase.mjs";
 import SnowBallMesh from "./classes/SnowBallMesh.js";
 import ParticlesMesh from "./classes/ParticlesMesh.js";
 import { createBowls } from "./components/bowls.js";
@@ -95,12 +96,13 @@ var axisHelper = new THREE.AxesHelper(5000);
 //scene.add(axisHelper);
 let sound
 if (P.music) {
-sound = new Sound({
+sound = new SoundBase(camera,{
   bpm:P.music.bpm,
   beatThreshold: P.music.beatThreshold,
   beatHoldTime: P.music.beatHoldTime,
   lowEndSlice: P.music.lowEndSlice,
-  mp3: P.music.mp3
+  mp3: P.music.mp3,
+  gain:P.music.gain
 })
 }
 

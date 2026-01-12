@@ -27,30 +27,40 @@ class B64Loader {
         return (texture)
     }
 
-    b64loadSound(src,sound) {
+
+    async b64loadSound(src, audioBuffer) {
         console.log("b64 ", B64Loader.b64, "loading sound ", src)
-        console.log("sounds ", sounds)
+        //console.log("sound before load", sound)
         const loader = new AudioLoader();
-        let mp3 = null
         if (B64Loader.b64) {
-            loader.load(sounds[src], (buffer) => {
-                console.log("buffer ", buffer)
-                sound.setBuffer(buffer);
-                sound.setLoop(true);
-                sound.setVolume(1);
-                sound.play(0);
-                //sound.loopStart = this.musicPosition;
-                //mp3 = buffer
-                //return (mp3)
-            });
-            //console.log("loaded mp3 ", mp3)
-            //return (mp3)
+            audioBuffer = await loader.loadAsync(sounds[src])
         } else {
-            mp3 = loader.load('sounds/' + src, (buffer) => mp3 = buffer)
-            return (mp3)
+            audioBuffer = await loader.loadAsync('sounds/' + src)
         }
+        return(audioBuffer)
     }
-    //const material = new THREE.MeshBasicMaterial({ map: texture });
+
+    async xb64loadSound(src, audioBuffer) {
+    console.log("b64 ", B64Loader.b64, "loading sound ", src)
+    //console.log("sound before load", sound)
+    const loader = new AudioLoader();
+    if (B64Loader.b64) {
+        loader.load(sounds[src], (buffer) => {
+            console.log("loaded b64")
+            audioBuffer = buffer;
+        });
+        return (audioBuffer)
+        //console.log("loaded mp3 ", mp3)
+        //return (mp3)
+    } else {
+        loader.load('sounds/' + src, (buffer) => {
+            console.log("loaded mp3")
+            audioBuffer = buffer;
+        })
+
+    }
 }
+}
+
 
 export { B64Loader }

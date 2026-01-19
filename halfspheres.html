@@ -30,7 +30,7 @@
 
     // Initialisation de la caméra
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.z = 100;
 
     // Initialisation du rendu
     const renderer = new THREE.WebGLRenderer();
@@ -38,7 +38,7 @@
     document.body.appendChild(renderer.domElement);
 
     // Créer une géométrie de sphère
-    const radius = 2;
+    const radius = 20;
     const widthSegments = 32;
     const heightSegments = 32;
     const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
@@ -132,8 +132,8 @@
       texture.offset.set(c, d);
     }
 
-    changeSet(textureLeft, 0.5, 1, 0, 0);
-    changeSet(textureRight, 0.5, 1, 0.5, 0);
+    //changeSet(textureLeft, 0.5, 1, 0, 0);
+    //changeSet(textureRight, 0.5, 1, 0.5, 0);
 
     // Créer deux matériaux avec des textures différentes
     const materialLeft = new THREE.MeshPhongMaterial({
@@ -154,7 +154,7 @@
 
     // Ajouter une lumière
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(1, 1, 1);
+    light.position.set(0, 0, 1);
     scene.add(light);
 
     // Animation

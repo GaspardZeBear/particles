@@ -28,8 +28,8 @@ function createBowls({ bowlsCount = 10, w = 400, h = 400, imgs = [], pThingMeshR
     let bowlSpeed = Math.random() * 0.03 + 0.001
     for (let b = 0; b < bowlsPerOrbit; b++) {
       let idx = Math.floor(Math.random() * imgs.length)
-
-      let mesh = new ThingMesh(imgs[idx], thingMeshRadius)
+      //console.log("speedFactor ", BasicParams.getProfile().bowlsSpeedFactorTheta)
+      let mesh = new ThingMesh(imgs[idx], thingMeshRadius, BasicParams.getProfile().bowlsSpeedFactorTheta,BasicParams.getProfile().bowlsSpeedFactorPhi)
       let nAngle = angle + b * 2 * Math.PI / bowlsPerOrbit
       console.log("createBowls() creating bowl ", i + b, " nAngle ", nAngle, " img ", imgs[idx])
       mesh.initPosition(radius, nAngle, bowlSpeed)

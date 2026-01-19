@@ -34,11 +34,13 @@ class MeshMover {
   }
 
   move() {
+    //console.log("speedFactor theta", this.mesh.bowlsSpeedFactorTheta)
+    //console.log("speedFactor phi", this.mesh.bowlsSpeedFactorPhi)
     const pos = this.getXYZ(this.orbit, this.theta, this.phi)
     //this.theta += this.angularSpeed / (5+2*Math.cos(this.phi))
     //this.phi += this.angularSpeed / (6+2*Math.cos(this.phi))
-    this.theta += this.angularSpeed / 20
-    this.phi += this.angularSpeed / 20
+    this.theta += this.angularSpeed / this.mesh.bowlsSpeedFactorTheta
+    this.phi += this.angularSpeed / this.mesh.bowlsSpeedFactorPhi
     this.mesh.position.x = pos.x
     this.mesh.position.y = pos.y
     this.mesh.position.z = pos.z
@@ -48,38 +50,6 @@ class MeshMover {
   }
 
 
-XinitPosition(x, y, z, orbit, angle, angularSpeed) {
-    this.mesh.orbit0 = orbit
-    this.mesh.orbit = orbit
-    //if (this.mesh.orbit > 4 ) {
-    //  this.mesh.orbit=this.mesh.orbit0
-    //}
-    this.mesh.angle = angle;
-    this.mesh.angularSpeed = angularSpeed
-    this.mesh.x0 = x
-    this.mesh.y0 = y
-    this.mesh.z0 = z
-    this.mesh.move()
 
-    //this.mesh.mesh.position.x = orbit * Math.cos(angle);
-    //this.mesh.mesh.position.y = y
-    //this.mesh.mesh.position.z = orbit * Math.sin(angle);
-  }
-
-
-  Xmove() {
-    this.mesh.angle += this.mesh.angularSpeed / 8
-    if (this.mesh.orbit > 4) {
-      this.mesh.orbit = this.mesh.orbit0
-    }
-    this.mesh.position.x = this.mesh.orbit * Math.cos(this.mesh.angle);
-    this.mesh.position.y = this.mesh.y0
-    //this.mesh.position.y = this.mesh.orbit * Math.cos(this.mesh.angle) *Math.sin(this.mesh.angle);
-    this.mesh.position.z = this.mesh.orbit * Math.sin(this.mesh.angle)
-    //zeroMesh.position.set(x,y,z)
-    //this.mesh.mesh.rotateX(Math.PI / 300)
-    this.mesh.rotateY(Math.PI / 300)
-    this.mesh.rotateZ(Math.PI / 600)
-  }
 }
 export default MeshMover

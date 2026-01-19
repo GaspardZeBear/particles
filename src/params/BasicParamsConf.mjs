@@ -7,8 +7,10 @@ const conf = {
         //b64: Don not set b64 here !!!!
         bowlsCount: 20,
         bowlsPerOrbit: 5,
+        bowlsSpeedFactorTheta :20,
+        bowlsSpeedFactorPhi :20,
         snowGlobeRadius: 95,
-        thingMeshRadius: [10,30],
+        thingMeshRadius: [10, 30],
         flakesCount: 500,
 
         cameraFov: 60,
@@ -17,6 +19,13 @@ const conf = {
         cameraX: 0,
         cameraY: 0,
         cameraZ: 600,
+        music: {
+            mp3: '',
+            bpm: 0,
+            beatThreshold: 0,
+            beatHoldTime: 0,
+            lowEndSlice: 0,
+        }
     },
     //------------------------------------------------------------- 
     "Alia": {
@@ -56,14 +65,29 @@ const conf = {
             //'bb/Ourson_Filaments_1_3x.jpg',
             //'bb/Oursons.jpg',
             //'bb/Oursons_eruption_1_2x.jpg',
-            'bb/Ourson_$_50_50_50_x_2_3x.jpg',
-            'bb/Ourson_$_50_50_50_x_2_4x.jpg',
+            //'bb/Ourson_$_50_50_50_x_2_3x.jpg',
+            //'bb/Ourson_$_50_50_50_x_2_4x.jpg',
             ////'bb/x1080_Meduse_1_2x.jpg',
             //'bb/x1080.jpg',
+            //'bb/mozart.mp3.jpg',
             'bb/LeLoup_eruption_2_4x.jpg',
         ],
         backgroundImg: 'backgrounds/Univers.jpg',
-        snowBallImg: 'bb/LeLoup_eruption_2_4x.jpg',
+        snowBallImg: 'backgrounds/ciel.jpg',
+        bowlsCount: 4,
+        bowlsPerOrbit: 2,
+        thingMeshRadius: [30, 50],
+        snowGlobeRadius: 150,
+        music: {
+            mp3: 'mozart.mp3',
+            gain : 4.0,
+            //mp3: '../sounds/sardouPasMort.mp3',
+            bpm: 91,
+            beatThreshold: 150,
+            beatHoldTime: 750,
+            lowEndSlice: 10,
+        }
+
     },
 
     //------------------------------------------------------------- ,

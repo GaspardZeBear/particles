@@ -13,9 +13,11 @@ import { B64Loader } from './B64Loader.mjs';
 
 class ThingMesh extends Mesh {
 
-  constructor(zTexture, radius = 12) {
+  constructor(zTexture, radius = 12,bowlsSpeedFactorTheta=20,bowlsSpeedFactorPhi=20) {
     super()
     this.radius = radius
+    this.bowlsSpeedFactorTheta=bowlsSpeedFactorTheta
+    this.bowlsSpeedFactorPhi=bowlsSpeedFactorPhi
     this.setGeometry()
     //const texture = new TextureLoader().load('textures/' + zTexture)
     const texture0 = new B64Loader().b64loadJpg(zTexture)

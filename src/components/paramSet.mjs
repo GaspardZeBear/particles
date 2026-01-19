@@ -1,4 +1,4 @@
 // Automatically generated file, do not modify
-const profile='Alia'
-const b64=false
+const profile='bb'
+const b64=true
 export {profile, b64}
